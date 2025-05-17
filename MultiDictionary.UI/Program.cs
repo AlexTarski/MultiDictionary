@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MultiDictionary.App.Interfaces;
+using MultiDictionary.App.Services;
 
 namespace MultiDictionary.UI
 {
@@ -11,7 +13,9 @@ namespace MultiDictionary.UI
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5001") });
+            builder.Services.AddScoped<IWordService, WordService>();
+            builder.Services.AddScoped<IGlossaryService, GlossaryService>();
 
             await builder.Build().RunAsync();
         }
