@@ -26,4 +26,8 @@
     <ProjectReference Include="..\MultiDictionary.Domain\MultiDictionary.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

@@ -14,6 +14,6 @@ namespace MultiDictionary.Domain.Entities
         public string Definition { get; set; }
         public string AdditionalInfo { get; set; }
         public Glossary Glossary { get; set; }
-        public int GlossayId { get; set; }
+        public int GlossaryId { get; set; }
     }
 }

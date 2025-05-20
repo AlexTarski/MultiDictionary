@@ -11,19 +11,29 @@ namespace MultiDictionary.Infrastructure
 {
     public class MultiDictionaryContext : DbContext
     {
-        private readonly IConfiguration _config;
-
         public DbSet<Glossary> Glossaries { get; set; }
         public DbSet<Word> Words { get; set; }
 
-        public MultiDictionaryContext(IConfiguration config)
+        public MultiDictionaryContext() { }
+        public MultiDictionaryContext(DbContextOptions<MultiDictionaryContext> options)
+            : base(options) { }
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            _config = config;
-        }
+            modelBuilder.Entity<Word>()
+                .HasOne(w => w.Glossary)
+                .WithMany(g => g.Words)
+                .HasForeignKey(w => w.GlossaryId)
+                .HasPrincipalKey(g => g.Id) //EF core should do that auto, but works only with manual assignment
+                .OnDelete(DeleteBehavior.Cascade);
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_config["ConnectionStrings:MultiDictionary"]);
+            modelBuilder.Entity<Word>()
+                .Property(word => word.Id)
+                .UseIdentityColumn(1, 1);
+
+            modelBuilder.Entity<Glossary>()
+                .Property(glossary => glossary.Id)
+                .UseIdentityColumn(1, 1);
         }
     }
 }
