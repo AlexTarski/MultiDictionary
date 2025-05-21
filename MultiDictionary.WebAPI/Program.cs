@@ -6,6 +6,7 @@ using MultiDictionary.Domain.Entities;
 using MultiDictionary.Infrastructure;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace MultiDictionary.WebAPI
 {
@@ -32,6 +33,11 @@ namespace MultiDictionary.WebAPI
             builder.Services.AddScoped<IGlossaryService, GlossaryService>();
             builder.Services.AddScoped<IWordService, WordService>();
 
+            builder.Services.AddControllersWithViews()
+                .AddNewtonsoftJson(cfg =>
+                    cfg.SerializerSettings
+                    .ReferenceLoopHandling = ReferenceLoopHandling.Ignore); //ignore nested loops (Glossary has Words which have a Glossary prop in them)
+
 
             var app = builder.Build();
 
@@ -42,10 +48,10 @@ namespace MultiDictionary.WebAPI
                 if (!await dbContext.Database.CanConnectAsync())
                 {
                     await dbContext.Database.MigrateAsync();
+                    //Seed data to Db
+                    var seeder = scope.ServiceProvider.GetRequiredService<MultiDictionarySeeder>();
+                    await seeder.SeedAsync();
                 }
-                //Seed date to Db
-                var seeder = scope.ServiceProvider.GetRequiredService<MultiDictionarySeeder>();
-                await seeder.SeedAsync();
             }
 
             // Configure the HTTP request pipeline.

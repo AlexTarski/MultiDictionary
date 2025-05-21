@@ -9,5 +9,6 @@ namespace MultiDictionary.App.Interfaces
 {
     public interface IGlossaryService : IEntityService<Glossary>
     {
+        public Task<IEnumerable<Glossary>> GetAllAsync(bool includeWords);
     }
 }

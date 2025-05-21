@@ -32,7 +32,7 @@ namespace MultiDictionary.App.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Word>> GetAllWordsByThemeAsync(int glossaryId, string theme)
+        public Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme)
         {
             throw new NotImplementedException();
         }

@@ -9,7 +9,6 @@ namespace MultiDictionary.App.Interfaces
     public interface IEntityService<T> 
         where T : class
     {
-        Task<IEnumerable<T>> GetAllAsync();
         Task<T> GetByIdAsync(int id);
         void AddEntity(Object model);
         Task UpdateEntityAsync(Object model);

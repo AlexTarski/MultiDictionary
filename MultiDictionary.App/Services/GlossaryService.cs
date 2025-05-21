@@ -27,9 +27,9 @@ namespace MultiDictionary.App.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Glossary>> GetAllAsync()
+        public async Task<IEnumerable<Glossary>> GetAllAsync(bool includeWords)
         {
-            throw new NotImplementedException();
+            return await _repo.GetAllGlossariesAsync(includeWords);
         }
 
         public Task<Glossary> GetByIdAsync(int id)

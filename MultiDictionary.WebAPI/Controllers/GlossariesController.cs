@@ -18,6 +18,6 @@ namespace MultiDictionary.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Glossary>> Get() => await _service.GetAllAsync();
+        public async Task<IEnumerable<Glossary>> Get(bool includeWords = true) => await _service.GetAllAsync(includeWords);
     }
 }

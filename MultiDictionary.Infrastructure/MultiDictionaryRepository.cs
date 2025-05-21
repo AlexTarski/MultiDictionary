@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MultiDictionary.Domain;
 using MultiDictionary.Domain.Entities;
 using System;
@@ -30,9 +31,19 @@ namespace MultiDictionary.Infrastructure
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Glossary>> GetAllGlossariesAsync()
+        public async Task<IEnumerable<Glossary>> GetAllGlossariesAsync(bool includeWords)
         {
-            throw new NotImplementedException();
+            if(includeWords)
+            {
+                return await _context.Glossaries
+                    .Include(glossary => glossary.Words)
+                    .ToListAsync();
+            }
+            else
+            {
+                return await _context.Glossaries
+                    .ToListAsync();
+            }
         }
 
         public Task<IEnumerable<Word>> GetAllWordsAsync()
@@ -45,12 +56,12 @@ namespace MultiDictionary.Infrastructure
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Word>> GetAllWordsByThemeAsync(int glossaryId, string theme)
+        public Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Glossary> GetGlossaryByIdAsync(int id)
+        public Task<Glossary> GetGlossaryByIdAsync(int id, bool includeWords)
         {
             throw new NotImplementedException();
         }
