@@ -1,12 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using MultiDictionary.App.Services;
+using Microsoft.Extensions.Options;
 using MultiDictionary.App.Interfaces;
+using MultiDictionary.App.Services;
 using MultiDictionary.Domain;
 using MultiDictionary.Domain.Entities;
 using MultiDictionary.Infrastructure;
-using Microsoft.Extensions.Options;
-using System.Diagnostics;
 using Newtonsoft.Json;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace MultiDictionary.WebAPI
 {
@@ -20,7 +21,10 @@ namespace MultiDictionary.WebAPI
 
             var connectionString = builder.Configuration.GetConnectionString("MultiDictionaryContextDb");
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true; //without that option all possibly nullable types would be marked as requiered
+            });
             builder.Services.AddDbContext<MultiDictionaryContext>(options =>
             {
                 options.UseSqlServer(connectionString,
@@ -32,6 +36,7 @@ namespace MultiDictionary.WebAPI
             builder.Services.AddScoped<IMultiDictionaryRepository, MultiDictionaryRepository>();
             builder.Services.AddScoped<IGlossaryService, GlossaryService>();
             builder.Services.AddScoped<IWordService, WordService>();
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             builder.Services.AddControllersWithViews()
                 .AddNewtonsoftJson(cfg =>

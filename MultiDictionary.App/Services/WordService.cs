@@ -27,9 +27,9 @@ namespace MultiDictionary.App.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Word>> GetAllAsync()
+        public async Task<IEnumerable<Word>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _repo.GetAllWordsAsync();
         }
 
         public Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme)

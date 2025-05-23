@@ -46,9 +46,9 @@ namespace MultiDictionary.Infrastructure
             }
         }
 
-        public Task<IEnumerable<Word>> GetAllWordsAsync()
+        public async Task<IEnumerable<Word>> GetAllWordsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Words .ToListAsync();
         }
 
         public Task<IEnumerable<Word>> GetWordsByGlossaryAsync(int glossaryId)

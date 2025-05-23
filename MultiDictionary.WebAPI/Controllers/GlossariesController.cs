@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using MultiDictionary.App.Interfaces;
 using MultiDictionary.Domain.Entities;
+using MultiDictionary.WebAPI.ViewModels;
 
 namespace MultiDictionary.WebAPI.Controllers
 {
@@ -10,14 +12,33 @@ namespace MultiDictionary.WebAPI.Controllers
     {
         private readonly IGlossaryService _service;
         private readonly ILogger<GlossariesController> _logger;
+        private readonly IMapper _mapper;
 
-        public GlossariesController(IGlossaryService service, ILogger<GlossariesController> logger)
+        public GlossariesController(IGlossaryService service,
+            ILogger<GlossariesController> logger,
+            IMapper mapper)
         {
             _service = service;
             _logger = logger;
+            _mapper = mapper;
         }
 
+        //[HttpGet]
+        //public async Task<IEnumerable<Glossary>> Get(bool includeWords = true) => await _service.GetAllAsync(includeWords);
         [HttpGet]
-        public async Task<IEnumerable<Glossary>> Get(bool includeWords = true) => await _service.GetAllAsync(includeWords);
+        public async Task<IActionResult> GetAllGlossaries(bool includeWords = false) //param with default value for query
+        {
+            try
+            {
+                var result = await _service.GetAllAsync(includeWords);
+                return Ok(_mapper.Map<IEnumerable<GlossaryViewModel>>(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get glossaries {ex}", ex);
+                return BadRequest("Failed to get glossaries");
+            }
+        }
+
     }
 }
