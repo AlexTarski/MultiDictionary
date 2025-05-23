@@ -10,6 +10,7 @@ namespace MultiDictionary.App.Interfaces
     public interface IWordService : IEntityService<Word>
     {
         Task<IEnumerable<Word>> GetAllAsync();
+        Task<IEnumerable<Word>> GetWordsByGlossaryAsync(int glossaryId);
         Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme);
     }
 }

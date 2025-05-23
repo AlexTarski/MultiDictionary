@@ -51,24 +51,30 @@ namespace MultiDictionary.Infrastructure
             return await _context.Words .ToListAsync();
         }
 
-        public Task<IEnumerable<Word>> GetWordsByGlossaryAsync(int glossaryId)
+        public async Task<IEnumerable<Word>> GetWordsByGlossaryAsync(int glossaryId)
         {
-            throw new NotImplementedException();
+            return await _context.Words.
+                Where(word => word.GlossaryId == glossaryId)
+                .ToListAsync();
         }
 
-        public Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme)
+        public async Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme)
         {
-            throw new NotImplementedException();
+            return await _context.Words.
+                Where(word => word.GlossaryId == glossaryId && word.Theme == theme)
+                .ToListAsync();
         }
 
-        public Task<Glossary> GetGlossaryByIdAsync(int id, bool includeWords)
+        public async Task<Glossary> GetGlossaryByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Glossaries
+                .Include(glossary => glossary.Words)
+                .FirstOrDefaultAsync(glossary => glossary.Id == id);
         }
 
-        public Task<Word> GetWordByIdAsync(int id)
+        public async Task<Word> GetWordByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Words.FirstOrDefaultAsync(word => word.Id == id);
         }
 
         public Task UpdateEntityAsync(object model)

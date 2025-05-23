@@ -10,7 +10,7 @@ namespace MultiDictionary.Domain
     public interface IMultiDictionaryRepository 
     {
         Task<IEnumerable<Glossary>> GetAllGlossariesAsync(bool includeWords);
-        Task<Glossary> GetGlossaryByIdAsync(int id, bool includeWords);
+        Task<Glossary> GetGlossaryByIdAsync(int id);
         Task<IEnumerable<Word>> GetAllWordsAsync();
         Task<IEnumerable<Word>> GetWordsByGlossaryAsync(int glossaryId);
         Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme);

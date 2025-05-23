@@ -32,14 +32,19 @@ namespace MultiDictionary.App.Services
             return await _repo.GetAllWordsAsync();
         }
 
-        public Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme)
+        public async Task<IEnumerable<Word>> GetWordsByGlossaryAsync(int glossaryId)
         {
-            throw new NotImplementedException();
+            return await _repo.GetWordsByGlossaryAsync(glossaryId);
         }
 
-        public Task<Word> GetByIdAsync(int id)
+        public async Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme)
         {
-            throw new NotImplementedException();
+            return await _repo.GetWordsByThemeAsync(glossaryId, theme);
+        }
+
+        public async Task<Word> GetByIdAsync(int id)
+        {
+            return await _repo.GetWordByIdAsync(id);
         }
 
         public bool SaveAll()

@@ -32,9 +32,9 @@ namespace MultiDictionary.App.Services
             return await _repo.GetAllGlossariesAsync(includeWords);
         }
 
-        public Task<Glossary> GetByIdAsync(int id)
+        public async Task<Glossary> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _repo.GetGlossaryByIdAsync(id);
         }
 
         public bool SaveAll()

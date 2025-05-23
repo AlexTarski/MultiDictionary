@@ -23,8 +23,6 @@ namespace MultiDictionary.WebAPI.Controllers
             _mapper = mapper;
         }
 
-        //[HttpGet]
-        //public async Task<IEnumerable<Glossary>> Get(bool includeWords = true) => await _service.GetAllAsync(includeWords);
         [HttpGet]
         public async Task<IActionResult> GetAllGlossaries(bool includeWords = false) //param with default value for query
         {
@@ -37,6 +35,22 @@ namespace MultiDictionary.WebAPI.Controllers
             {
                 _logger.LogError("Failed to get glossaries {ex}", ex);
                 return BadRequest("Failed to get glossaries");
+            }
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var result = await _service.GetByIdAsync(id);
+                if (result != null) return Ok(_mapper.Map<GlossaryViewModel>(result));
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get glossary {ex}", ex);
+                return BadRequest("Failed to get glossary");
             }
         }
 

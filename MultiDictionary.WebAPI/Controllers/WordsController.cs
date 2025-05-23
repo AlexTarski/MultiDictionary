@@ -23,9 +23,6 @@ namespace MultiDictionary.WebAPI.Controllers
             _mapper = mapper;
         }
 
-        //[HttpGet]
-        //public async Task<IEnumerable<Word>> Get() => await _service.GetAllAsync();
-
         [HttpGet]
         public async Task<IActionResult> GetAllWords()
         {
@@ -41,5 +38,54 @@ namespace MultiDictionary.WebAPI.Controllers
             }
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var result = await _service.GetByIdAsync(id);
+                if (result != null) return Ok(_mapper.Map<WordViewModel>(result));
+                else return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get word {ex}", ex);
+                return BadRequest("Failed to get word");
+            }
+        }
+
+        [HttpGet("glossary/{glossaryId:int}")]
+        public async Task<IActionResult> GetByGlossary(int glossaryId)
+        {
+            try
+            {
+                var result = await _service.GetWordsByGlossaryAsync(glossaryId);
+                if(!result.Any())
+                    return NotFound($"No words found for Glossary ID {glossaryId}");
+                return Ok(_mapper.Map<IEnumerable<WordViewModel>>(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get words {ex}", ex);
+                return BadRequest("Failed to get words");
+            }
+        }
+
+        [HttpGet("glossary/{glossaryId:int}/theme")]
+        public async Task<IActionResult> GetByTheme(int glossaryId, [FromQuery] string theme)
+        {
+            try
+            {
+                var result = await _service.GetWordsByThemeAsync(glossaryId, theme);
+                if (result == null || !result.Any())
+                    return NotFound($"No words found for Glossary ID {glossaryId} and Theme '{theme}'");
+                return Ok(_mapper.Map<IEnumerable<WordViewModel>>(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get words {ex}", ex);
+                return BadRequest("Failed to get words");
+            }
+        }
     }
 }
