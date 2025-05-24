@@ -1,7 +1,6 @@
-﻿using MultiDictionary.Domain.Entities;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace MultiDictionary.WebAPI.ViewModels
+namespace MultiDictionary.Shared.ViewModels
 {
     public class WordViewModel
     {

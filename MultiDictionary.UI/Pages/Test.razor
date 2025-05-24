@@ -1,0 +1,36 @@
+﻿@page "/test"
+@using MultiDictionary.Shared.ViewModels
+@using MultiDictionary.UI.Interfaces
+@inject IGlossaryService GlossaryService
+
+<h3>Glossaries</h3>
+
+<button @onclick="LoadGlossaries">Load Glossaries</button>
+
+<ul>
+    @if (glossaries != null)
+    {
+        @foreach (var glossary in glossaries)
+        {
+            <li>@glossary.Name</li> <!-- Displays glossary names -->
+        }
+    }
+    else
+    {
+        <li>No glossaries found</li>
+    }
+</ul>
+
+@code {
+    private IEnumerable<GlossaryViewModel>? glossaries;
+
+    private async Task LoadGlossaries()
+    {
+        glossaries = await GlossaryService.GetAllAsync(false); // Calls API with includeWords=true
+    }
+
+    protected override async Task OnInitializedAsync()
+{
+    glossaries = await GlossaryService.GetAllAsync(false);
+}
+}

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiDictionary.App", "MultiDictionary.App\MultiDictionary.App.csproj", "{5674CA4D-36F3-420A-A979-08DF2FA48660}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiDictionary.WebAPI", "MultiDictionary.WebAPI\MultiDictionary.WebAPI.csproj", "{A5648C99-D494-42F6-B725-046E2FEAC288}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiDictionary.UI", "MultiDictionary.UI\MultiDictionary.UI.csproj", "{FDCB58EC-9C7B-4D91-A2A3-36EB1962496B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiDictionary.Shared", "MultiDictionary.Shared\MultiDictionary.Shared.csproj", "{F2A2B9F0-E092-4188-9DCC-54C3BA850D69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{FDCB58EC-9C7B-4D91-A2A3-36EB1962496B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDCB58EC-9C7B-4D91-A2A3-36EB1962496B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDCB58EC-9C7B-4D91-A2A3-36EB1962496B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2A2B9F0-E092-4188-9DCC-54C3BA850D69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2A2B9F0-E092-4188-9DCC-54C3BA850D69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2A2B9F0-E092-4188-9DCC-54C3BA850D69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2A2B9F0-E092-4188-9DCC-54C3BA850D69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

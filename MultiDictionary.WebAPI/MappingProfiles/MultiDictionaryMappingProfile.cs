@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MultiDictionary.Domain.Entities;
-using MultiDictionary.WebAPI.ViewModels;
+using MultiDictionary.Shared.ViewModels;
 
 namespace MultiDictionary.WebAPI.MappingProfiles
 {

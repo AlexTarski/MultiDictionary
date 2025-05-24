@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MultiDictionary.App\MultiDictionary.App.csproj" />
     <ProjectReference Include="..\MultiDictionary.Infrastructure\MultiDictionary.Infrastructure.csproj" />
+    <ProjectReference Include="..\MultiDictionary.Shared\MultiDictionary.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MultiDictionary.App.Interfaces;
 using MultiDictionary.Domain.Entities;
-using MultiDictionary.WebAPI.ViewModels;
+using MultiDictionary.Shared.ViewModels;
 
 namespace MultiDictionary.WebAPI.Controllers
 {

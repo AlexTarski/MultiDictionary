@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using MultiDictionary.App.Interfaces;
-using MultiDictionary.App.Services;
+using MultiDictionary.UI.Interfaces;
+using MultiDictionary.UI.Services;
 
 namespace MultiDictionary.UI
 {
@@ -13,7 +13,11 @@ namespace MultiDictionary.UI
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5001") });
+            var config = new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                    .Build();
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(config["ApiSettings:BaseUrl"]) });
+
             builder.Services.AddScoped<IWordService, WordService>();
             builder.Services.AddScoped<IGlossaryService, GlossaryService>();
 

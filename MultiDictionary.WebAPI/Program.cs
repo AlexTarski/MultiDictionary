@@ -43,6 +43,13 @@ namespace MultiDictionary.WebAPI
                     cfg.SerializerSettings
                     .ReferenceLoopHandling = ReferenceLoopHandling.Ignore); //ignore nested loops (Glossary has Words which have a Glossary prop in them)
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    cors => cors.AllowAnyOrigin()
+                                .AllowAnyMethod()
+                                .AllowAnyHeader());
+            });
 
             var app = builder.Build();
 
@@ -65,6 +72,7 @@ namespace MultiDictionary.WebAPI
             app.UseRouting();
             app.UseAuthorization();
             app.MapControllers();
+            app.UseCors("AllowAll"); // Enables CORS to establish connection with Blazor WebAssembly
 
             await app.RunAsync();
         }

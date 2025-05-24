@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MultiDictionary.WebAPI.ViewModels
+namespace MultiDictionary.Shared.ViewModels
 {
     public class GlossaryViewModel
     {
