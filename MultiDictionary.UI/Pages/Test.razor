@@ -2,15 +2,21 @@
 @using MultiDictionary.Shared.ViewModels
 @using MultiDictionary.UI.Interfaces
 @inject IGlossaryService GlossaryService
+@inject IWordService WordService
 
-<h3>Glossaries</h3>
+<h3>Test buttons</h3>
 
-<button @onclick="LoadGlossaries">Load Glossaries</button>
+<div>
+    <p>These buttons are used only to test services functionality and connection to WebApi.</p>
+    <p>Enjoy clicking them!</p>
+</div>
+
+<button type="button" class="btn btn-info" @onclick="LoadAllGlossaries">Load All Glossaries</button>
 
 <ul>
-    @if (glossaries != null)
+    @if (allGlossaries != null)
     {
-        @foreach (var glossary in glossaries)
+        @foreach (var glossary in allGlossaries)
         {
             <li>@glossary.Name</li> <!-- Displays glossary names -->
         }
@@ -21,11 +27,97 @@
     }
 </ul>
 
-@code {
-    private IEnumerable<GlossaryViewModel>? glossaries;
+<button type="button" class="btn btn-info" @onclick="LoadGlossaryById">Load Glossary by Id = 1</button>
 
-    private async Task LoadGlossaries()
+<ul>
+    @if (glossaryById != null)
     {
-        glossaries = await GlossaryService.GetAllAsync(false); // Calls API with includeWords=true
+        <li>@glossaryById.Name</li> <!-- Displays glossary name -->
+    }
+    else
+    {
+        <li>Glossary not found</li>
+    }
+</ul>
+
+<button type="button" class="btn btn-info" @onclick="LoadAllWords">Load All Words</button>
+
+<ul>
+    @if (allWords != null)
+    {
+        @foreach (var word in allWords)
+        {
+            <li>@word.WordName</li>
+        }
+    }
+    else
+    {
+        <li>No words found</li>
+    }
+</ul>
+
+<button type="button" class="btn btn-info" @onclick="LoadWordsByTheme">Load Words By Theme</button>
+
+<ul>
+    @if (wordsByTheme != null)
+    {
+        @foreach (var word in wordsByTheme)
+        {
+            <li>@word.WordName</li>
+            <li>@word.Theme</li>
+        }
+    }
+    else
+    {
+        <li>No words found</li>
+    }
+</ul>
+
+<button type="button" class="btn btn-info" @onclick="LoadWordById">Load Word by Id = 1</button>
+
+<ul>
+    @if (wordById != null)
+    {
+        <li>@wordById.Id</li>
+        <li>@wordById.WordName</li>
+    }
+    else
+    {
+        <li>Word not found</li>
+    }
+</ul>
+
+
+
+@code {
+    private IEnumerable<GlossaryViewModel>? allGlossaries;
+    private IEnumerable<WordViewModel>? allWords;
+    private IEnumerable<WordViewModel>? wordsByTheme;
+    private GlossaryViewModel glossaryById;
+    private WordViewModel wordById;
+
+    private async Task LoadAllGlossaries()
+    {
+        allGlossaries = await GlossaryService.GetAllAsync(false); // Calls API with includeWords=false
+    }
+
+    private async Task LoadGlossaryById()
+    {
+        glossaryById = await GlossaryService.GetByIdAsync(1);
+    }
+
+    private async Task LoadAllWords()
+    {
+        allWords = await WordService.GetAllAsync();
+    }
+
+    private async Task LoadWordById()
+    {
+        wordById = await WordService.GetByIdAsync(1);
+    }
+
+    private async Task LoadWordsByTheme()
+    {
+        wordsByTheme = await WordService.GetWordsByThemeAsync(1, "Write your theme here");
     }
 }

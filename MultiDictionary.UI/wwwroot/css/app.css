@@ -59,6 +59,24 @@ html, body {
     margin-top: 5px;
 }
 
+.btn-info {
+    background-color: #ADCAE6;
+    color: #153349;
+    border-color: #ADCAE6;
+}
+
+    .btn-info:hover {
+        background-color: #B7C8DB;
+        color: #153349;
+        border-color: #B7C8DB;
+    }
+
+    .btn-info:active {
+        background-color: #9CADBF !important;
+        color: #153349 !important;
+        border-color: #9CADBF !important;
+    }
+
 #blazor-error-ui {
     color-scheme: light only;
     background: lightyellow;

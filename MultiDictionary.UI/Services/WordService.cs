@@ -24,9 +24,17 @@ namespace MultiDictionary.UI.Services
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<WordViewModel>> GetAllAsync()
+        public async Task<IEnumerable<WordViewModel>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<IEnumerable<WordViewModel>>($"api/words/");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Network error: {ex.Message}");
+                return new List<WordViewModel>(); // Return empty list instead of crashing
+            }
         }
 
         public async Task<WordViewModel> GetByIdAsync(int id)
@@ -55,9 +63,17 @@ namespace MultiDictionary.UI.Services
             }
         }
 
-        public Task<IEnumerable<WordViewModel>> GetWordsByThemeAsync(int glossaryId, string theme)
+        public async Task<IEnumerable<WordViewModel>> GetWordsByThemeAsync(int glossaryId, string theme)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<IEnumerable<WordViewModel>>($"api/words/glossary/{glossaryId}/theme?theme={theme}");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Network error: {ex.Message}");
+                return new List<WordViewModel>(); // Return empty list instead of crashing
+            }
         }
 
         public Task UpdateEntityAsync(object model)

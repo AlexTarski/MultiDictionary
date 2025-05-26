@@ -3,11 +3,11 @@
 
 <nav class="nav-menu">
     <a class="navbar-brand" href="\">MultiDictionary</a>
-    <p @onclick="ToggleGlossaryMenu" class="nav-item glossaries" active-class="active">Glossaries</p>
+    <p @onclick="ToggleGlossaryMenu" class="nav-item glossaries" active-class="active">Glossaries <i class="fa-solid fa-chevron-down @GetArrowClass() "></i></p>
 
     @if (showGlossaries && glossaries != null)
     {
-        <ul class="glossary-list">
+        <ul class="glossary-list" >
             @foreach (var glossary in glossaries)
             {
                 <li @onclick="() => NavigateToGlossary(glossary.Id)">
@@ -39,5 +39,10 @@
         {
             glossaries = await GlossaryService.GetAllAsync(false); // Fetch glossaries on first expand
         }
+    }
+
+    private string GetArrowClass()
+    {
+        return showGlossaries ? "rotate" : "";
     }
 }

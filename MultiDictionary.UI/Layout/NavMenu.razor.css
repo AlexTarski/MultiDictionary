@@ -1,4 +1,4 @@
-.navbar-brand {
+﻿.navbar-brand {
     height: 3.5rem;
     font-size: 1.6rem;
     color: #FFFFFF;
@@ -24,20 +24,18 @@
     cursor: pointer;
 }
 
-    .nav-item.active {
-        background-color: #ff6a00 !important;
-        color: white !important;
-    }
-
     .nav-item:hover {
-        background-color: #ff6a00; /* Changes background color */
-        color: white; /* Changes text color */
-        transition: 0.3s ease-in-out; /* Smooth transition effect */
+        background-color: #005D55;
+        color: white;
+        transition: 0.3s ease-in-out;
     }
 
 
     .nav-item.glossaries {
+        display: flex;
         box-shadow: inset 0px 3px 5px rgba(0, 0, 0, 0.3) !important; /*inner shadow*/
+        justify-content: space-between; /* Pushes icon to the right */
+        align-items: center; /* Centers icon vertically */
     }
 
     .nav-item ::deep a {
@@ -66,13 +64,19 @@ ul.glossary-list {
     background-color: #005049;
     margin: 0;
     padding: 4px 0px 16px 32px;
-    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2),
-                           inset 0px -1px 3px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2), inset 0px -1px 3px rgba(0, 0, 0, 0.2);
 }
+
+    ul.glossary-list:hover {
+        background-color: #00443D;
+        transition: 0.3s ease-in-out;
+    }
+
 
     ul.glossary-list li {
         padding-top: 5px;
         padding-bottom: 5px;
+        cursor: pointer;
     }
 
 @media (min-width: 641px) {
@@ -90,4 +94,16 @@ ul.glossary-list {
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
     }
+}
+
+i {
+    font-size: 12px; /* Sets icon size */
+    display: inline-block;
+    visibility: visible;
+    margin-right: 15px;
+}
+
+.rotate {
+    transform: rotate(180deg);
+    transition: transform 0.1s ease-in-out;
 }

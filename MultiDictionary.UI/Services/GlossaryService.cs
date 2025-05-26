@@ -37,9 +37,17 @@ namespace MultiDictionary.UI.Services
             }
         }
 
-        public Task<GlossaryViewModel> GetByIdAsync(int id)
+        public async Task<GlossaryViewModel> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<GlossaryViewModel>($"api/glossaries/{id}");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Network error: {ex.Message}");
+                return new GlossaryViewModel(); // Return empty list instead of crashing
+            }
         }
 
         public Task UpdateEntityAsync(object model)
