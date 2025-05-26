@@ -1,4 +1,5 @@
 .page {
+    background-color: #F4FBF8;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -6,19 +7,23 @@
 
 main {
     flex: 1;
+    color: #324B47;
+    background-color: #F4FBF8;
 }
 
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background: #CCE8E2;
+    box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.3) !important;
 }
 
 .top-row {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
+    background-color: #4A635F;
     justify-content: flex-end;
     height: 3.5rem;
     display: flex;
     align-items: center;
+    margin: 10px 15px 15px 15px;
+    border-radius: 25px 25px 25px 25px;
 }
 
     .top-row ::deep a, .top-row ::deep .btn-link {
@@ -52,16 +57,17 @@ main {
     }
 
     .sidebar {
-        width: 250px;
+        width: 200px;
         height: 100vh;
-        position: sticky;
+        position: relative;
         top: 0;
+        z-index: 1;
     }
 
     .top-row {
-        position: sticky;
+        position: relative;
         top: 0;
-        z-index: 1;
+        z-index: 1000;
     }
 
     .top-row.auth ::deep a:first-child {

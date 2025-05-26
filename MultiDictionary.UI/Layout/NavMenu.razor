@@ -1,34 +1,35 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">MultiDictionary.UI</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+﻿@using MultiDictionary.Shared.ViewModels
+@inject IGlossaryService GlossaryService
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="test">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> test
-            </NavLink>
-        </div>
-    </nav>
-</div>
+<nav class="nav-menu">
+    <a class="navbar-brand" href="\">MultiDictionary</a>
+    <p @onclick="ToggleGlossaryMenu" class="nav-item glossaries" active-class="active">Glossaries</p>
+
+    @if (showGlossaries && glossaries != null)
+    {
+        <ul class="glossary-list">
+            @foreach (var glossary in glossaries)
+            {
+                <li>@glossary.Name</li> <!-- Displays glossary names -->
+            }
+        </ul>
+    }
+   
+    <a href="/test" class="nav-item" active-class="active">Test</a>
+
+</nav>
 
 @code {
-    private bool collapseNavMenu = true;
+    private bool showGlossaries = false;
+    private IEnumerable<GlossaryViewModel>? glossaries;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    private async Task ToggleGlossaryMenu()
     {
-        collapseNavMenu = !collapseNavMenu;
+        showGlossaries = !showGlossaries; // Toggles visibility
+
+        if (showGlossaries && glossaries == null)
+        {
+            glossaries = await GlossaryService.GetAllAsync(false); // Fetch glossaries on first expand
+        }
     }
 }
