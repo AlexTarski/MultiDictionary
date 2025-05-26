@@ -15,6 +15,50 @@ html, body {
     color: red;
 }
 
+.word-list {
+    list-style: none;
+    padding: 0;
+}
+
+.word-item {
+    border-bottom: 1px solid #3A4A47;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.word-header {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.word-name {
+    font-size: 1.8rem; /* Makes the name bigger */
+    font-weight: bold;
+    margin-right: 8px;
+    text-align: left;
+}
+
+.word-theme {
+    font-size: 0.9rem;
+    font-style: italic;
+    text-align: left;
+    word-spacing: -1px;
+    color: #506070;
+    padding-top: 16px;
+}
+
+.word-definition {
+    font-size: 1.2rem;
+    margin-top: 5px;
+}
+
+.word-additional-info {
+    font-size: 1rem;
+    font-style: italic;
+    color: #52625E;
+    margin-top: 5px;
+}
+
 #blazor-error-ui {
     color-scheme: light only;
     background: lightyellow;

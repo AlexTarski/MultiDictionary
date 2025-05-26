@@ -1,31 +1,40 @@
-﻿@page "/test"
+﻿@page "/words/{glossaryId:int}"
 @using MultiDictionary.Shared.ViewModels
 @using MultiDictionary.UI.Interfaces
-@inject IGlossaryService GlossaryService
+@inject IWordService WordService
 
-<h3>Glossaries</h3>
-
-<button @onclick="LoadGlossaries">Load Glossaries</button>
-
-<ul>
-    @if (glossaries != null)
+<ul class="word-list">
+    @foreach (var word in words)
     {
-        @foreach (var glossary in glossaries)
-        {
-            <li>@glossary.Name</li> <!-- Displays glossary names -->
-        }
-    }
-    else
-    {
-        <li>No glossaries found</li>
+        <li class="word-item">
+            <div class="word-header">
+                <span class="word-name">@word.WordName</span>
+                <span class="word-theme">@word.Theme</span>
+            </div>
+            <div class="word-definition">
+                @word.Definition
+            </div>
+            <div class="word-additional-info">
+                @word.AdditionalInfo
+            </div>
+        </li>
     }
 </ul>
 
-@code {
-    private IEnumerable<GlossaryViewModel>? glossaries;
 
-    private async Task LoadGlossaries()
+@code {
+    [Parameter]
+    public int glossaryId { get; set; }
+    
+    private IEnumerable<WordViewModel>? words = new List<WordViewModel>();
+
+    protected override async Task OnInitializedAsync()
     {
-        glossaries = await GlossaryService.GetAllAsync(false); // Calls API with includeWords=true
+        words = await WordService.GetWordsByGlossaryAsync(glossaryId);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        words = await WordService.GetWordsByGlossaryAsync(glossaryId);
     }
 }

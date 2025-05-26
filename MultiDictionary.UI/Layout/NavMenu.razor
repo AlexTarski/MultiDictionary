@@ -10,7 +10,9 @@
         <ul class="glossary-list">
             @foreach (var glossary in glossaries)
             {
-                <li>@glossary.Name</li> <!-- Displays glossary names -->
+                <li @onclick="() => NavigateToGlossary(glossary.Id)">
+                        @glossary.Name
+                </li>
             }
         </ul>
     }
@@ -22,6 +24,12 @@
 @code {
     private bool showGlossaries = false;
     private IEnumerable<GlossaryViewModel>? glossaries;
+    [Inject] NavigationManager NavManager { get; set; }
+
+    void NavigateToGlossary(int id)
+    {
+        NavManager.NavigateTo($"/words/{id}");
+    }
 
     private async Task ToggleGlossaryMenu()
     {

@@ -1,5 +1,7 @@
-﻿using MultiDictionary.Shared.ViewModels;
+﻿using MultiDictionary.Domain.Entities;
+using MultiDictionary.Shared.ViewModels;
 using MultiDictionary.UI.Interfaces;
+using System.Net.Http.Json;
 
 namespace MultiDictionary.UI.Services
 {
@@ -27,14 +29,30 @@ namespace MultiDictionary.UI.Services
             throw new NotImplementedException();
         }
 
-        public Task<WordViewModel> GetByIdAsync(int id)
+        public async Task<WordViewModel> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<WordViewModel>($"api/words/{id}");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Network error: {ex.Message}");
+                return new WordViewModel(); // Return empty instead of crashing
+            }
         }
 
-        public Task<IEnumerable<WordViewModel>> GetWordsByGlossaryAsync(int glossaryId)
+        public async Task<IEnumerable<WordViewModel>> GetWordsByGlossaryAsync(int glossaryId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _httpClient.GetFromJsonAsync<IEnumerable<WordViewModel>>($"api/words/glossary/{glossaryId}");
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Network error: {ex.Message}");
+                return new List<WordViewModel>(); // Return empty list instead of crashing
+            }
         }
 
         public Task<IEnumerable<WordViewModel>> GetWordsByThemeAsync(int glossaryId, string theme)
