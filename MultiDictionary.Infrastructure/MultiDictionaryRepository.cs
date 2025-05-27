@@ -21,7 +21,7 @@ namespace MultiDictionary.Infrastructure
             _context = context;
             _logger = logger;
         }
-        public async Task AddEntity(object model)
+        public async Task AddEntityAsync(object model)
         {
             await _context.AddAsync(model);
         }
@@ -81,6 +81,12 @@ namespace MultiDictionary.Infrastructure
         {
             throw new NotImplementedException();
         }
+        
+        public async Task<bool> IsGlossaryExistingAsync(string name)
+        {
+            return await _context.Glossaries.AnyAsync(glossary => glossary.Name == name);
+        }
+        
         public async Task<bool> SaveAllAsync()
         {
             return await _context.SaveChangesAsync() > 0;

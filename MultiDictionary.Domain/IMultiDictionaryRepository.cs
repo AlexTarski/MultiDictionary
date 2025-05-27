@@ -15,9 +15,10 @@ namespace MultiDictionary.Domain
         Task<IEnumerable<Word>> GetWordsByGlossaryAsync(int glossaryId);
         Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme);
         Task<Word> GetWordByIdAsync(int id);
-        Task AddEntity(Object model);
+        Task AddEntityAsync(Object model);
         Task UpdateEntityAsync(Object model);
         Task DeleteEntityAsync(int id);
+        Task<bool> IsGlossaryExistingAsync(string name);
         Task<bool> SaveAllAsync();
     }
 }

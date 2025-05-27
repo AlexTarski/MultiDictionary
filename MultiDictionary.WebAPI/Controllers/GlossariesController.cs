@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MultiDictionary.App.Interfaces;
 using MultiDictionary.Domain.Entities;
@@ -54,5 +55,47 @@ namespace MultiDictionary.WebAPI.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> AddGlossary([FromBody] GlossaryViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var newGlossary = _mapper.Map<GlossaryViewModel, Glossary>(model);
+                    if(await _service.IsGlossaryExistingAsync(newGlossary.Name))
+                    {
+                        newGlossary.Name = await UpdateName(newGlossary.Name);
+                    }
+
+                    await _service.AddEntityAsync(newGlossary);
+                    if (await _service.SaveAllAsync())
+                    {
+                        return Created($"/api/glossaries/{newGlossary.Id}", _mapper.Map<Glossary, GlossaryViewModel>(newGlossary)); //return HTTP 201 status (Created)
+                    }
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to save a new glossary: {ex}", ex);
+            }
+
+            return BadRequest("Failed to save new glossary");
+        }
+
+        private async Task<string> UpdateName(string name)
+        {
+            string newName = $"{name}_{new Random().Next(0, 99)}";
+            while(await _service.IsGlossaryExistingAsync(newName))
+            {
+                newName = $"{newName}{new Random().Next(0, 99)}";
+            }
+
+            return newName;
+        }
     }
 }

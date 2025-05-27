@@ -17,9 +17,14 @@ namespace MultiDictionary.App.Services
         {
             _repo = repo;
         }
-        public void AddEntity(object model)
+        public async Task AddEntityAsync(object model)
         {
-            _repo.AddEntity(model);
+            await _repo.AddEntityAsync(model);
+        }
+
+        public Task UpdateEntityAsync(object model)
+        {
+            throw new NotImplementedException();
         }
 
         public Task DeleteEntityAsync(int id)
@@ -37,14 +42,14 @@ namespace MultiDictionary.App.Services
             return await _repo.GetGlossaryByIdAsync(id);
         }
 
-        public bool SaveAll()
+        public async Task<bool> IsGlossaryExistingAsync(string name)
         {
-            throw new NotImplementedException();
+            return await _repo.IsGlossaryExistingAsync(name);
         }
-
-        public Task UpdateEntityAsync(object model)
+        
+        public async Task<bool> SaveAllAsync()
         {
-            throw new NotImplementedException();
+            return await _repo.SaveAllAsync();
         }
     }
 }
