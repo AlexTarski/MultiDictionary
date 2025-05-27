@@ -21,9 +21,9 @@ namespace MultiDictionary.Infrastructure
             _context = context;
             _logger = logger;
         }
-        public void AddEntity(object model)
+        public async Task AddEntity(object model)
         {
-            _context.Add(model);
+            await _context.AddAsync(model);
         }
 
         public Task DeleteEntityAsync(int id)
@@ -81,9 +81,9 @@ namespace MultiDictionary.Infrastructure
         {
             throw new NotImplementedException();
         }
-        public bool SaveAll()
+        public async Task<bool> SaveAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }
