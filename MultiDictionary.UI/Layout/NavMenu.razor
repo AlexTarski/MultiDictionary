@@ -3,7 +3,13 @@
 
 <nav class="nav-menu">
     <a class="navbar-brand" href="\">MultiDictionary</a>
-    <p @onclick="ToggleGlossaryMenu" class="nav-item glossaries" active-class="active">Glossaries <i class="fa-solid fa-chevron-down @GetArrowClass() "></i></p>
+    <p @onclick="ToggleGlossaryMenu" class="nav-item glossaries" active-class="active">
+        Glossaries 
+        <div @onclick:stopPropagation class="glossaries icons">
+            <i @onclick="AddGlossary" class="fa-solid fa-plus" data-bs-toggle="tooltip" title="Add Glossary"></i>
+            <i @onclick="ToggleGlossaryMenu" class="fa-solid fa-chevron-down @GetArrowClass() "></i>
+        </div>
+    </p>
 
     @if (showGlossaries && glossaries != null)
     {
@@ -12,6 +18,25 @@
             {
                 <li @onclick="() => NavigateToGlossary(glossary.Id)">
                         @glossary.Name
+                </li>
+            }
+
+            @if (IsAddingNewGlossary)
+            {
+                <li>
+                    <EditForm Model="newGlossary" OnValidSubmit="async () => await SaveGlossary()">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label asp-for="Name">Glossary Name:</label>
+                            <InputText id="glossaryName" class="form-control" @bind-Value="newGlossary.Name" />
+                            <ValidationMessage For="@(() => newGlossary.Name)" class="text-danger" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CancelGlossary">Cancel</button>
+                    </EditForm>
                 </li>
             }
         </ul>
@@ -23,6 +48,8 @@
 
 @code {
     private bool showGlossaries = false;
+    private bool IsAddingNewGlossary = false;
+    private GlossaryViewModel newGlossary = new GlossaryViewModel { Name = "New Glossary" };
     private IEnumerable<GlossaryViewModel>? glossaries;
     [Inject] NavigationManager NavManager { get; set; }
 
@@ -35,10 +62,38 @@
     {
         showGlossaries = !showGlossaries; // Toggles visibility
 
-        if (showGlossaries && glossaries == null)
+        if (showGlossaries)
         {
-            glossaries = await GlossaryService.GetAllAsync(false); // Fetch glossaries on first expand
+            glossaries = await GlossaryService.GetAllAsync(false);
         }
+    }
+
+    private void AddGlossary()
+    {
+        if(!showGlossaries)
+        {
+            showGlossaries = true;
+        }
+
+        IsAddingNewGlossary = true;
+    }
+
+    private void CancelGlossary()
+    {
+        IsAddingNewGlossary = false;
+        newGlossary = new GlossaryViewModel { Name = "New Glossary" };
+    }
+
+    private async Task SaveGlossary()
+    {
+        if (!string.IsNullOrWhiteSpace(newGlossary.Name))
+        {
+            await GlossaryService.AddEntityAsync(newGlossary);
+            glossaries = await GlossaryService.GetAllAsync(false);
+        }
+
+        IsAddingNewGlossary = false;
+        newGlossary = new GlossaryViewModel { Name = "New Glossary" };
     }
 
     private string GetArrowClass()

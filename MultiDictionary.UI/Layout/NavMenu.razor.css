@@ -67,17 +67,19 @@ ul.glossary-list {
     box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2), inset 0px -1px 3px rgba(0, 0, 0, 0.2);
 }
 
-    ul.glossary-list:hover {
-        background-color: #00443D;
-        transition: 0.3s ease-in-out;
-    }
-
-
     ul.glossary-list li {
         padding-top: 5px;
         padding-bottom: 5px;
         cursor: pointer;
     }
+
+        ul.glossary-list li:hover {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            cursor: pointer;
+            background-color: #00443D;
+            transition: 0.3s ease-in-out;
+        }
 
 @media (min-width: 641px) {
     .navbar-toggler {
@@ -97,7 +99,7 @@ ul.glossary-list {
 }
 
 i {
-    font-size: 12px; /* Sets icon size */
+    font-size: 14px; /* Sets icon size */
     display: inline-block;
     visibility: visible;
     margin-right: 15px;
@@ -106,4 +108,8 @@ i {
 .rotate {
     transform: rotate(180deg);
     transition: transform 0.1s ease-in-out;
+}
+
+I:hover {
+    color: #C6C7C5;
 }

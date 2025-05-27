@@ -13,9 +13,28 @@ namespace MultiDictionary.UI.Services
             _httpClient = httpClient;
         }
 
-        public void AddEntity(object model)
+        public async Task<bool> AddEntityAsync(object model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("api/glossaries", model);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Failed to add entity. Status: {response.StatusCode}, Error: {error}");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Network error: {ex.Message}");
+            }
+
+            return false;
         }
 
         public Task DeleteEntityAsync(int id)
@@ -55,7 +74,7 @@ namespace MultiDictionary.UI.Services
             throw new NotImplementedException();
         }
 
-        public bool SaveAll()
+        public Task<bool> SaveAllAsync()
         {
             throw new NotImplementedException();
         }

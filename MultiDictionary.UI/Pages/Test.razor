@@ -87,7 +87,18 @@
     }
 </ul>
 
+<button type="button" class="btn btn-info" @onclick="AddNewGlossary">Add New Glossary</button>
 
+<ul>
+    @if (IsSuccess)
+    {
+        <li>Success</li>
+    }
+    else
+    {
+        <li>Bad things happen :(</li>
+    }
+</ul>
 
 @code {
     private IEnumerable<GlossaryViewModel>? allGlossaries;
@@ -95,6 +106,7 @@
     private IEnumerable<WordViewModel>? wordsByTheme;
     private GlossaryViewModel glossaryById;
     private WordViewModel wordById;
+    private bool IsSuccess = false;
 
     private async Task LoadAllGlossaries()
     {
@@ -119,5 +131,24 @@
     private async Task LoadWordsByTheme()
     {
         wordsByTheme = await WordService.GetWordsByThemeAsync(1, "Write your theme here");
+    }
+
+    private async Task AddNewGlossary()
+    {
+        var newGlossary = new GlossaryViewModel
+        {
+                Name = "Brand New Glossary"
+        };
+
+        IsSuccess = await GlossaryService.AddEntityAsync(newGlossary);
+
+        if(IsSuccess)
+        {
+            Console.WriteLine("Glossary added successfully");
+        }
+        else
+        {
+            Console.WriteLine("Failed to add glossary");
+        }
     }
 }

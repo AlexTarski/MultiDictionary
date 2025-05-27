@@ -11,9 +11,18 @@ main {
     background-color: #F4FBF8;
 }
 
+.content {
+    padding-top: 1.1rem;
+}
+
 .sidebar {
     background: #CCE8E2;
     box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.3) !important;
+    scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
 }
 
 .top-row {
@@ -56,18 +65,24 @@ main {
         flex-direction: row;
     }
 
+    .content {
+        margin-left: 200px;
+    }
+
     .sidebar {
         width: 200px;
-        height: 100vh;
-        position: relative;
+        height: 100%;
+        position: fixed;
         top: 0;
-        z-index: 1;
+        bottom: 0;
+        overflow-y: auto; /*make sidebar scrollable*/
     }
 
     .top-row {
         position: relative;
         top: 0;
         z-index: 1000;
+        margin-left: 215px;
     }
 
     .top-row.auth ::deep a:first-child {

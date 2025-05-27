@@ -5,8 +5,8 @@ namespace MultiDictionary.Shared.ViewModels
     public class WordViewModel
     {
         public int Id { get; set; }
-        [Required]
-        [MinLength(1)]
+        [Required(ErrorMessage = "Word name is required.")]
+        [MinLength(1, ErrorMessage = "Word name must be at least 1 character.")]
         public string WordName { get; set; }
 
         public string Theme { get; set; }

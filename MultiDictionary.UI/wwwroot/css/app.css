@@ -3,10 +3,6 @@ html, body {
     background-color: #F4FBF8;
 }
 
-.content {
-    padding-top: 1.1rem;
-}
-
 .invalid {
     outline: 1px solid red;
 }

@@ -2,6 +2,7 @@
 using MultiDictionary.Shared.ViewModels;
 using MultiDictionary.UI.Interfaces;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 
 namespace MultiDictionary.UI.Services
 {
@@ -14,7 +15,7 @@ namespace MultiDictionary.UI.Services
             _httpClient = httpClient;
         }
 
-        public void AddEntity(object model)
+        public async Task<bool> AddEntityAsync(object model)
         {
             throw new NotImplementedException();
         }
@@ -81,7 +82,7 @@ namespace MultiDictionary.UI.Services
             throw new NotImplementedException();
         }
 
-        public bool SaveAll()
+        public Task<bool> SaveAllAsync()
         {
             throw new NotImplementedException();
         }
