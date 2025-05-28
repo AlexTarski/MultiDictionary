@@ -11,8 +11,8 @@ namespace MultiDictionary.App.Interfaces
     {
         Task<T> GetByIdAsync(int id);
         Task AddEntityAsync(Object model);
-        Task UpdateEntityAsync(Object model);
-        Task DeleteEntityAsync(int id);
+        void UpdateEntity(Object model);
+        void DeleteEntity(Object model);
         Task<bool> SaveAllAsync();
     }
 }

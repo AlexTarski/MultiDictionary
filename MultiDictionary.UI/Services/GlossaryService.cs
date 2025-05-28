@@ -37,6 +37,11 @@ namespace MultiDictionary.UI.Services
             return false;
         }
 
+        public Task UpdateEntityAsync(object model)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task DeleteEntityAsync(int id)
         {
             throw new NotImplementedException();
@@ -67,11 +72,6 @@ namespace MultiDictionary.UI.Services
                 Console.WriteLine($"Network error: {ex.Message}");
                 return new GlossaryViewModel(); // Return empty list instead of crashing
             }
-        }
-
-        public Task UpdateEntityAsync(object model)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<bool> SaveAllAsync()

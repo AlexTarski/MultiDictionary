@@ -26,9 +26,14 @@ namespace MultiDictionary.Infrastructure
             await _context.AddAsync(model);
         }
 
-        public Task DeleteEntityAsync(int id)
+        public void UpdateEntity(object model)
         {
-            throw new NotImplementedException();
+            _context.Update(model);
+        }
+
+        public void DeleteEntity(object model)
+        {
+            _context.Remove(model);
         }
 
         public async Task<IEnumerable<Glossary>> GetAllGlossariesAsync(bool includeWords)
@@ -77,11 +82,6 @@ namespace MultiDictionary.Infrastructure
             return await _context.Words.FirstOrDefaultAsync(word => word.Id == id);
         }
 
-        public Task UpdateEntityAsync(object model)
-        {
-            throw new NotImplementedException();
-        }
-        
         public async Task<bool> IsGlossaryExistingAsync(string name)
         {
             return await _context.Glossaries.AnyAsync(glossary => glossary.Name == name);

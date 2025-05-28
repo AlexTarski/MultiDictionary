@@ -22,9 +22,14 @@ namespace MultiDictionary.App.Services
              await _repo.AddEntityAsync(model);
         }
 
-        public Task DeleteEntityAsync(int id)
+        public void UpdateEntity(object model)
         {
-            throw new NotImplementedException();
+            _repo.UpdateEntity(model);
+        }
+
+        public void DeleteEntity(object model)
+        {
+            _repo.DeleteEntity(model);
         }
 
         public async Task<IEnumerable<Word>> GetAllAsync()
@@ -50,11 +55,6 @@ namespace MultiDictionary.App.Services
         public async Task<bool> SaveAllAsync()
         {
             return await _repo.SaveAllAsync();
-        }
-
-        public Task UpdateEntityAsync(object model)
-        {
-            throw new NotImplementedException();
         }
     }
 }

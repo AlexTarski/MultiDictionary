@@ -22,14 +22,14 @@ namespace MultiDictionary.App.Services
             await _repo.AddEntityAsync(model);
         }
 
-        public Task UpdateEntityAsync(object model)
+        public void UpdateEntity(object model)
         {
-            throw new NotImplementedException();
+            _repo.UpdateEntity(model);
         }
 
-        public Task DeleteEntityAsync(int id)
+        public void DeleteEntity(object model)
         {
-            throw new NotImplementedException();
+            _repo.DeleteEntity(model);
         }
 
         public async Task<IEnumerable<Glossary>> GetAllAsync(bool includeWords)
