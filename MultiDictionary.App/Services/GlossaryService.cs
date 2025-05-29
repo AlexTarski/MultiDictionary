@@ -44,7 +44,7 @@ namespace MultiDictionary.App.Services
 
         public async Task<bool> IsGlossaryExistingAsync(string name)
         {
-            return await _repo.IsGlossaryExistingAsync(name);
+            return await _repo.IsGlossaryNameExistingAsync(name);
         }
         
         public async Task<bool> SaveAllAsync()

@@ -12,5 +12,8 @@ namespace MultiDictionary.Shared.ViewModels
         public string Theme { get; set; }
         public string Definition { get; set; }
         public string AdditionalInfo { get; set; }
+
+        [Required(ErrorMessage = "Glossary ID is required.")]
+        public int? GlossaryId { get; set; }
     }
 }

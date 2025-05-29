@@ -25,7 +25,7 @@ namespace MultiDictionary.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllGlossaries(bool includeWords = false) //param with default value for query
+        public async Task<IActionResult> GetAllGlossariesAsync(bool includeWords = false) //param with default value for query
         {
             try
             {
@@ -40,7 +40,7 @@ namespace MultiDictionary.WebAPI.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace MultiDictionary.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddGlossary([FromBody] GlossaryViewModel model)
+        public async Task<IActionResult> AddGlossaryAsync([FromBody] GlossaryViewModel model)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace MultiDictionary.WebAPI.Controllers
                     var newGlossary = _mapper.Map<GlossaryViewModel, Glossary>(model);
                     if(await _service.IsGlossaryExistingAsync(newGlossary.Name))
                     {
-                        newGlossary.Name = await UpdateName(newGlossary.Name);
+                        newGlossary.Name = await UpdateNameAsync(newGlossary.Name);
                     }
 
                     await _service.AddEntityAsync(newGlossary);
@@ -84,10 +84,34 @@ namespace MultiDictionary.WebAPI.Controllers
                 _logger.LogError("Failed to save a new glossary: {ex}", ex);
             }
 
-            return BadRequest("Failed to save new glossary");
+            return BadRequest("Failed to save a new glossary");
         }
 
-        private async Task<string> UpdateName(string name)
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteGlossaryAsync(int id)
+        {
+            try
+            {
+                var glossaryToDelete = await _service.GetByIdAsync(id);
+                if (glossaryToDelete != null)
+                {
+                    _service.DeleteEntity(glossaryToDelete);
+                    var success = await _service.SaveAllAsync();
+                    return success ? NoContent() : StatusCode(500, "Failed to delete a glossary");
+                }
+                else
+                {
+                    return NotFound($"Glossary with ID {id} not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to delete glossary with ID {id}", id);
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
+            }
+        }
+
+        private async Task<string> UpdateNameAsync(string name)
         {
             string newName = $"{name}_{new Random().Next(0, 99)}";
             while(await _service.IsGlossaryExistingAsync(newName))

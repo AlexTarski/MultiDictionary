@@ -19,7 +19,12 @@ namespace MultiDictionary.App.Services
         }
         public async Task AddEntityAsync(object model)
         {
-             await _repo.AddEntityAsync(model);
+            Word word = (Word)model;
+            if(!await _repo.IsGlossaryExistingAsync(word.GlossaryId))
+            {
+                throw new ArgumentException("Impossible to add a new word inside the glossary that doesn`t exist");
+            }
+            await _repo.AddEntityAsync(model);
         }
 
         public void UpdateEntity(object model)
