@@ -96,9 +96,9 @@ namespace MultiDictionary.WebAPI.Controllers
                 if (ModelState.IsValid)
                 {
                     // Assign defaults if null
-                    model.Theme ??= "Your theme";
-                    model.Definition ??= "Word definition";
-                    model.AdditionalInfo ??= "Your additional information about word";
+                    model.Theme ??= "No theme";
+                    model.Definition ??= "No definition";
+                    model.AdditionalInfo ??= "No additional information about word";
 
                     var newWord = _mapper.Map<WordViewModel, Word>(model);
                     await _service.AddEntityAsync(newWord);

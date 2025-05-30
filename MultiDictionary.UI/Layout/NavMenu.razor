@@ -1,4 +1,5 @@
 ﻿@using MultiDictionary.Shared.ViewModels
+@using MultiDictionary.UI.Pages
 @inject IGlossaryService GlossaryService
 
 <nav class="nav-menu">
@@ -16,12 +17,29 @@
         <ul class="glossary-list" >
             @foreach (var glossary in glossaries)
             {
-                <li @onclick="() => NavigateToGlossary(glossary.Id)">
+                <li class="item" @onclick="() => { NavigateToGlossary(glossary.Id); SelectGlossary(glossary.Id); isDeletingGlossary = false; }">
+                    <p class="name">
                         @glossary.Name
+                    </p>
+                    <div @onclick:stopPropagation>
+                        <i class="fa-solid fa-trash-can" @onclick="() => { MarkGlossaryToDelete(glossary.Id); ShowConfirmDialog(); SelectGlossary(glossary.Id); }" data-bs-toggle="tooltip" title="Delete Glossary"></i>
+                        @if(selectedGlossaryId == glossary.Id) //show arrow only for currently opened glossary
+                        {
+                            <i class="fa-solid fa-angle-right"></i>
+                        }
+                    </div>
+                    @if(isDeletingGlossary && selectedGlossaryId == glossary.Id)
+                    {
+                        <div class="confirm-dialog">
+                            <p>Are you sure?</p>
+                            <button type="submit" class="btn btn-primary" @onclick="() => HandleConfirmation(true)">Yes!</button>
+                            <button type="button" class="btn btn-secondary" @onclick="() => HandleConfirmation(false)">Cancel!</button>
+                        </div>
+                    }
                 </li>
             }
 
-            @if (IsAddingNewGlossary)
+            @if (isAddingNewGlossary)
             {
                 <li>
                     <EditForm Model="newGlossary" OnValidSubmit="async () => await SaveGlossary()">
@@ -48,12 +66,15 @@
 
 @code {
     private bool showGlossaries = false;
-    private bool IsAddingNewGlossary = false;
+    private bool isAddingNewGlossary = false;
+    private bool isDeletingGlossary = false;
+    private int? selectedGlossaryId;
+    private int? glossaryToDeleteId;
     private GlossaryViewModel newGlossary = new GlossaryViewModel { Name = "New Glossary" };
     private IEnumerable<GlossaryViewModel>? glossaries;
     [Inject] NavigationManager NavManager { get; set; }
 
-    void NavigateToGlossary(int id)
+    private void NavigateToGlossary(int id)
     {
         NavManager.NavigateTo($"/words/{id}");
     }
@@ -68,6 +89,16 @@
         }
     }
 
+    private void ShowConfirmDialog()
+    {
+        isDeletingGlossary = true;
+    }
+
+    private void MarkGlossaryToDelete(int glossaryId)
+    {
+        glossaryToDeleteId = glossaryId;
+    }
+
     private void AddGlossary()
     {
         if(!showGlossaries)
@@ -75,12 +106,12 @@
             showGlossaries = true;
         }
 
-        IsAddingNewGlossary = true;
+        isAddingNewGlossary = true;
     }
 
     private void CancelGlossary()
     {
-        IsAddingNewGlossary = false;
+        isAddingNewGlossary = false;
         newGlossary = new GlossaryViewModel { Name = "New Glossary" };
     }
 
@@ -92,12 +123,53 @@
             glossaries = await GlossaryService.GetAllAsync(false);
         }
 
-        IsAddingNewGlossary = false;
+        isAddingNewGlossary = false;
         newGlossary = new GlossaryViewModel { Name = "New Glossary" };
+    }
+
+    private async Task DeleteGlossary(int? glossaryId)
+    {
+        try
+        {
+            if (glossaryId != null)
+            {
+                await GlossaryService.DeleteEntityAsync((int)glossaryId);
+                isDeletingGlossary = false;
+                glossaryToDeleteId = null;
+                glossaries = await GlossaryService.GetAllAsync(false);
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(glossaryId), "Glossary ID is null");
+            }
+
+        }
+        catch(ArgumentNullException ex)
+        {
+            Console.WriteLine($"Failed to delete a glossary: {ex.Message}");
+        }
+    }
+
+    private async Task HandleConfirmation(bool confirmed)
+    {
+        if(confirmed)
+        {
+            await DeleteGlossary(glossaryToDeleteId);
+        }
+        else
+        {
+            glossaryToDeleteId = null;
+            isDeletingGlossary = false;
+        }
     }
 
     private string GetArrowClass()
     {
         return showGlossaries ? "rotate" : "";
+    }
+
+    private void SelectGlossary(int glossaryId) //get currently opened glossary
+    {
+        selectedGlossaryId =  glossaryId;
     }
 }

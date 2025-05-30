@@ -67,38 +67,43 @@ ul.glossary-list {
     box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.2), inset 0px -1px 3px rgba(0, 0, 0, 0.2);
 }
 
-    ul.glossary-list li {
-        padding-top: 5px;
-        padding-bottom: 5px;
+    ul.glossary-list > .item {
+        display: flex;
+        padding: 15px 0px 15px 2px;
+        justify-content: space-between; /* Pushes icon to the right */
+        align-items: center; /* Centers icon vertically */
         cursor: pointer;
     }
 
-        ul.glossary-list li:hover {
-            padding-top: 5px;
-            padding-bottom: 5px;
-            cursor: pointer;
+        ul.glossary-list > .item:hover {
             background-color: #00443D;
             transition: 0.3s ease-in-out;
         }
 
-@media (min-width: 641px) {
-    .navbar-toggler {
-        display: none;
+    ul.glossary-list > .item > .name{
+        text-align: left;
+        margin-bottom: 0px;
     }
 
-    .collapse {
-        /* Never collapse the sidebar for wide screens */
-        display: block;
-    }
 
-    .nav-scrollable {
-        /* Allow sidebar to scroll for tall menus */
-        height: calc(100vh - 3.5rem);
-        overflow-y: auto;
-    }
-}
+        @media (min-width: 641px) {
+            .navbar-toggler {
+                display: none;
+            }
 
-i {
+            .collapse {
+                /* Never collapse the sidebar for wide screens */
+                display: block;
+            }
+
+            .nav-scrollable {
+                /* Allow sidebar to scroll for tall menus */
+                height: calc(100vh - 3.5rem);
+                overflow-y: auto;
+            }
+        }
+
+        i {
     font-size: 14px; /* Sets icon size */
     display: inline-block;
     visibility: visible;
@@ -113,3 +118,30 @@ i {
 I:hover {
     color: #C6C7C5;
 }
+
+.modal-overlay {
+    position: fixed !important; /* Escape relative parent */
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 100vw !important; /* Full viewport width */
+    height: 100vh !important; /* Full viewport height */
+    background: rgba(0, 0, 0, 0.5);
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999 !important; /* Ensure it sits on top */
+}
+.modal {
+    background: white !important;
+    width: 300px !important;
+    height: auto !important;
+    padding: 20px !important;
+    border-radius: 5px;
+    z-index: 10000 !important; /* Ensure it's above everything */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+

@@ -15,12 +15,42 @@ namespace MultiDictionary.UI.Services
             _httpClient = httpClient;
         }
 
-        public async Task<bool> AddEntityAsync(object model)
+        public async Task AddEntityAsync(object model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync("api/words", model);
+                if(!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Failed to add entity. Status: {response.StatusCode}, Error: {error}");
+                }
+            }
+            catch(HttpRequestException ex)
+            {
+                Console.WriteLine($"Network error: {ex.Message}");
+            }
         }
 
-        public Task DeleteEntityAsync(int id)
+        public async Task DeleteEntityAsync(int id)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"api/words/{id}");
+
+                if(!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Failed to delete word. Status: {response.StatusCode}, Error: {error}");
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Network error: {ex.Message}");
+            }
+        }
+
+        public Task UpdateEntityAsync(object model)
         {
             throw new NotImplementedException();
         }
@@ -75,16 +105,6 @@ namespace MultiDictionary.UI.Services
                 Console.WriteLine($"Network error: {ex.Message}");
                 return new List<WordViewModel>(); // Return empty list instead of crashing
             }
-        }
-
-        public Task UpdateEntityAsync(object model)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> SaveAllAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }

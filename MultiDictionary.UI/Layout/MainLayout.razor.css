@@ -66,11 +66,11 @@ main {
     }
 
     .content {
-        margin-left: 200px;
+        margin-left: 250px;
     }
 
     .sidebar {
-        width: 200px;
+        width: 250px;
         height: 100%;
         position: fixed;
         top: 0;
@@ -82,7 +82,7 @@ main {
         position: relative;
         top: 0;
         z-index: 1000;
-        margin-left: 215px;
+        margin-left: 265px;
     }
 
     .top-row.auth ::deep a:first-child {
