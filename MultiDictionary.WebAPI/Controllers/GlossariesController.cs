@@ -63,10 +63,6 @@ namespace MultiDictionary.WebAPI.Controllers
                 if (ModelState.IsValid)
                 {
                     var newGlossary = _mapper.Map<GlossaryViewModel, Glossary>(model);
-                    if(await _service.IsGlossaryExistingAsync(newGlossary.Name))
-                    {
-                        newGlossary.Name = await UpdateNameAsync(newGlossary.Name);
-                    }
 
                     await _service.AddEntityAsync(newGlossary);
                     if (await _service.SaveAllAsync())
@@ -109,17 +105,6 @@ namespace MultiDictionary.WebAPI.Controllers
                 _logger.LogError(ex, "Failed to delete glossary with ID {id}", id);
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
-        }
-
-        private async Task<string> UpdateNameAsync(string name)
-        {
-            string newName = $"{name}_{new Random().Next(0, 99)}";
-            while(await _service.IsGlossaryExistingAsync(newName))
-            {
-                newName = $"{newName}{new Random().Next(0, 99)}";
-            }
-
-            return newName;
         }
     }
 }

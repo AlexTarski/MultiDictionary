@@ -19,12 +19,21 @@ namespace MultiDictionary.App.Services
         }
         public async Task AddEntityAsync(object model)
         {
-            Word word = (Word)model;
-            if(!await _repo.IsGlossaryExistingAsync(word.GlossaryId))
+            try
             {
-                throw new ArgumentException("Impossible to add a new word inside the glossary that doesn`t exist");
+                var isValid = await EntityIsValid(model);
+
+                if (!isValid)
+                {
+                    throw new ArgumentException("Model validation failed");
+                }
+
+                await _repo.AddEntityAsync(model);
             }
-            await _repo.AddEntityAsync(model);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to add word: {ex.Message}");
+            }            
         }
 
         public void UpdateEntity(object model)
@@ -55,6 +64,23 @@ namespace MultiDictionary.App.Services
         public async Task<Word> GetByIdAsync(int id)
         {
             return await _repo.GetWordByIdAsync(id);
+        }
+
+        public async Task<bool> EntityIsValid(Object model)
+        {
+            if(model is Word newWord)
+            {
+                if (!await _repo.IsGlossaryExistingAsync(newWord.GlossaryId))
+                {
+                    throw new ArgumentException("Impossible to add a new word inside the glossary that doesn`t exist");
+                }
+
+                return true;
+            }
+            else
+            {
+                throw new ArgumentException("Model is not a Word", nameof(model));
+            }
         }
 
         public async Task<bool> SaveAllAsync()

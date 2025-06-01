@@ -11,7 +11,7 @@
     <p>Enjoy clicking them!</p>
 </div>
 
-<button type="button" class="btn btn-info" @onclick="LoadAllGlossaries">Load All Glossaries</button>
+<button type="button" class="btn btn-info test-btn" @onclick="LoadAllGlossaries">Load All Glossaries</button>
 
 <ul>
     @if (allGlossaries != null)
@@ -27,20 +27,7 @@
     }
 </ul>
 
-<button type="button" class="btn btn-info" @onclick="LoadGlossaryById">Load Glossary by Id = 1</button>
-
-<ul>
-    @if (glossaryById != null)
-    {
-        <li>@glossaryById.Name</li> <!-- Displays glossary name -->
-    }
-    else
-    {
-        <li>Glossary not found</li>
-    }
-</ul>
-
-<button type="button" class="btn btn-info" @onclick="LoadAllWords">Load All Words</button>
+<button type="button" class="btn btn-info test-btn" @onclick="LoadAllWords">Load All Words</button>
 
 <ul>
     @if (allWords != null)
@@ -56,66 +43,18 @@
     }
 </ul>
 
-<button type="button" class="btn btn-info" @onclick="LoadWordsByTheme">Load Words By Theme</button>
-
-<ul>
-    @if (wordsByTheme != null)
-    {
-        @foreach (var word in wordsByTheme)
-        {
-            <li>@word.WordName</li>
-            <li>@word.Theme</li>
-        }
-    }
-    else
-    {
-        <li>No words found</li>
-    }
-</ul>
-
-<button type="button" class="btn btn-info" @onclick="LoadWordById">Load Word by Id = 1</button>
-
-<ul>
-    @if (wordById != null)
-    {
-        <li>@wordById.Id</li>
-        <li>@wordById.WordName</li>
-    }
-    else
-    {
-        <li>Word not found</li>
-    }
-</ul>
 
 @code {
     private IEnumerable<GlossaryViewModel>? allGlossaries;
     private IEnumerable<WordViewModel>? allWords;
-    private IEnumerable<WordViewModel>? wordsByTheme;
-    private GlossaryViewModel glossaryById;
-    private WordViewModel wordById;
 
     private async Task LoadAllGlossaries()
     {
         allGlossaries = await GlossaryService.GetAllAsync(false); // Calls API with includeWords=false
     }
 
-    private async Task LoadGlossaryById()
-    {
-        glossaryById = await GlossaryService.GetByIdAsync(1);
-    }
-
     private async Task LoadAllWords()
     {
         allWords = await WordService.GetAllAsync();
-    }
-
-    private async Task LoadWordById()
-    {
-        wordById = await WordService.GetByIdAsync(1);
-    }
-
-    private async Task LoadWordsByTheme()
-    {
-        wordsByTheme = await WordService.GetWordsByThemeAsync(1, "Write your theme here");
     }
 }

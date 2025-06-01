@@ -57,6 +57,18 @@
     color: white;
 }
 
+.add-glossary-form {
+    border: 2px solid #006A61; /* Custom border color */
+    border-radius: 8px; /* Rounded corners */
+    padding: 12px; /* More comfortable spacing */
+    margin-right: 10px;
+    margin-top: 10px;
+    background-color: #006A61;
+    color: #FFFFFF;
+    font-size: 12px;
+    box-shadow: 3px 4px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
 ul.glossary-list {
     list-style-type: none;
     font-size: 0.9rem;
@@ -80,11 +92,15 @@ ul.glossary-list {
             transition: 0.3s ease-in-out;
         }
 
-    ul.glossary-list > .item > .name{
-        text-align: left;
-        margin-bottom: 0px;
-    }
-
+        ul.glossary-list > .item > .name {
+            text-align: left;
+            margin-bottom: 0px;
+            max-width: 80%;
+            flex-shrink: 2;
+            min-width: 0; /* Prevents forced width restrictions */
+            word-wrap: break-word; /* Forces long words to wrap */
+            overflow-wrap: break-word; /* Ensures wrapping works for long words */
+        }
 
         @media (min-width: 641px) {
             .navbar-toggler {
@@ -103,7 +119,7 @@ ul.glossary-list {
             }
         }
 
-        i {
+i {
     font-size: 14px; /* Sets icon size */
     display: inline-block;
     visibility: visible;
@@ -118,30 +134,3 @@ ul.glossary-list {
 I:hover {
     color: #C6C7C5;
 }
-
-.modal-overlay {
-    position: fixed !important; /* Escape relative parent */
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 100vw !important; /* Full viewport width */
-    height: 100vh !important; /* Full viewport height */
-    background: rgba(0, 0, 0, 0.5);
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999 !important; /* Ensure it sits on top */
-}
-.modal {
-    background: white !important;
-    width: 300px !important;
-    height: auto !important;
-    padding: 20px !important;
-    border-radius: 5px;
-    z-index: 10000 !important; /* Ensure it's above everything */
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-

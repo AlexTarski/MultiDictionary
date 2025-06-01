@@ -13,6 +13,7 @@ namespace MultiDictionary.App.Interfaces
         Task AddEntityAsync(Object model);
         void UpdateEntity(Object model);
         void DeleteEntity(Object model);
+        Task<bool> EntityIsValid(Object model);
         Task<bool> SaveAllAsync();
     }
 }

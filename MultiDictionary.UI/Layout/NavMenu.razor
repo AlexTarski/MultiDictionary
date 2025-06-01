@@ -15,46 +15,50 @@
     @if (showGlossaries && glossaries != null)
     {
         <ul class="glossary-list" >
+            @if (isAddingNewGlossary)
+            {
+                <li class="add-glossary-form">
+                    <EditForm Model="newGlossary" OnValidSubmit="async () => await SaveGlossary()">
+                        <DataAnnotationsValidator />
+
+                        <div class="mb-3">
+                            <label asp-for="Name">Glossary Name:</label>
+                            <InputText id="glossaryName" class="form-control" style="color: #00201C" @bind-Value="newGlossary.Name" />
+                            <ValidationMessage For="@(() => newGlossary.Name)" class="text-danger-navbar" style="color: #FF897D" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary confirm-btn-navbar">Save</button>
+                        <button type="button" class="btn btn-secondary cancel-btn-navbar" @onclick="CancelGlossary">Cancel</button>
+                    </EditForm>
+                </li>
+            }
+
             @foreach (var glossary in glossaries)
             {
                 <li class="item" @onclick="() => { NavigateToGlossary(glossary.Id); SelectGlossary(glossary.Id); isDeletingGlossary = false; }">
                     <p class="name">
                         @glossary.Name
                     </p>
-                    <div @onclick:stopPropagation>
-                        <i class="fa-solid fa-trash-can" @onclick="() => { MarkGlossaryToDelete(glossary.Id); ShowConfirmDialog(); SelectGlossary(glossary.Id); }" data-bs-toggle="tooltip" title="Delete Glossary"></i>
-                        @if(selectedGlossaryId == glossary.Id) //show arrow only for currently opened glossary
-                        {
-                            <i class="fa-solid fa-angle-right"></i>
-                        }
-                    </div>
-                    @if(isDeletingGlossary && selectedGlossaryId == glossary.Id)
+                    @if (isDeletingGlossary && selectedGlossaryId == glossary.Id)
                     {
                         <div class="confirm-dialog">
-                            <p>Are you sure?</p>
-                            <button type="submit" class="btn btn-primary" @onclick="() => HandleConfirmation(true)">Yes!</button>
-                            <button type="button" class="btn btn-secondary" @onclick="() => HandleConfirmation(false)">Cancel!</button>
+                            <p class="label">Are you sure?</p>
+                            <div class="confirmation-btns">
+                                <button type="submit" class="btn-sm btn-primary confirm-btn-navbar" @onclick="() => HandleConfirmation(true)">Yes!</button>
+                                <button type="button" class="btn-sm btn-secondary cancel-btn-navbar" @onclick="() => HandleConfirmation(false)">Cancel!</button>
+                            </div>
                         </div>
                     }
-                </li>
-            }
-
-            @if (isAddingNewGlossary)
-            {
-                <li>
-                    <EditForm Model="newGlossary" OnValidSubmit="async () => await SaveGlossary()">
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
-
-                        <div class="mb-3">
-                            <label asp-for="Name">Glossary Name:</label>
-                            <InputText id="glossaryName" class="form-control" @bind-Value="newGlossary.Name" />
-                            <ValidationMessage For="@(() => newGlossary.Name)" class="text-danger" />
+                    else
+                    {
+                        <div @onclick:stopPropagation>
+                            <i class="fa-solid fa-trash-can" @onclick="() => { MarkGlossaryToDelete(glossary.Id); ShowConfirmDialog(); SelectGlossary(glossary.Id); }" data-bs-toggle="tooltip" title="Delete Glossary"></i>
+                            @if (selectedGlossaryId == glossary.Id) //show arrow only for currently opened glossary
+                            {
+                                <i class="fa-solid fa-angle-right"></i>
+                            }
                         </div>
-
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-secondary" @onclick="CancelGlossary">Cancel</button>
-                    </EditForm>
+                    }
                 </li>
             }
         </ul>
@@ -99,14 +103,14 @@
         glossaryToDeleteId = glossaryId;
     }
 
-    private void AddGlossary()
+    private async Task AddGlossary()
     {
         if(!showGlossaries)
         {
-            showGlossaries = true;
+            await ToggleGlossaryMenu();
         }
 
-        isAddingNewGlossary = true;
+        isAddingNewGlossary = !isAddingNewGlossary;
     }
 
     private void CancelGlossary()
