@@ -53,7 +53,7 @@ namespace MultiDictionary.Infrastructure
 
         public async Task<IEnumerable<Word>> GetAllWordsAsync()
         {
-            return await _context.Words .ToListAsync();
+            return await _context.Words.ToListAsync();
         }
 
         public async Task<IEnumerable<Word>> GetWordsByGlossaryAsync(int glossaryId)
@@ -79,7 +79,7 @@ namespace MultiDictionary.Infrastructure
 
         public async Task<Word> GetWordByIdAsync(int id)
         {
-            return await _context.Words.FirstOrDefaultAsync(word => word.Id == id);
+            return await _context.Words.FindAsync(id);
         }
 
         public async Task<bool> IsGlossaryNameExistingAsync(string name)

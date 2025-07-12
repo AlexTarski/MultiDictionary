@@ -40,11 +40,12 @@ html, body {
 
     .word-list i {
         font-size: 18px;
+        height: 1em;
         text-align: right;
         color: #006A61;
         align-items: flex-start;
-        flex-grow: 1;
-        padding: 10px;
+        margin: 10px;
+        cursor: pointer;
     }
 
         .word-list i:hover {

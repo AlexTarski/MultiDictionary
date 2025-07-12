@@ -25,7 +25,7 @@ namespace MultiDictionary.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllGlossariesAsync(bool includeWords = false) //param with default value for query
+        public async Task<IActionResult> GetAllGlossariesAsync(bool includeWords = false) 
         {
             try
             {
@@ -88,17 +88,13 @@ namespace MultiDictionary.WebAPI.Controllers
         {
             try
             {
-                var glossaryToDelete = await _service.GetByIdAsync(id);
-                if (glossaryToDelete != null)
-                {
-                    _service.DeleteEntity(glossaryToDelete);
-                    var success = await _service.SaveAllAsync();
-                    return success ? NoContent() : StatusCode(500, "Failed to delete a glossary");
-                }
-                else
-                {
-                    return NotFound($"Glossary with ID {id} not found");
-                }
+                var success = await _service.DeleteEntityAsync(id);
+                return success ? NoContent() : StatusCode(500, "Failed to delete a glossary");
+            }
+            catch(KeyNotFoundException ex)
+            {
+                _logger.LogError(ex, "Failed to delete glossary with ID {id}", id);
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {

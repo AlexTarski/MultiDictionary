@@ -18,34 +18,39 @@ namespace MultiDictionary.App.Services
         {
             _repo = repo;
         }
-        public async Task AddEntityAsync(object model)
+        public async Task<bool> AddEntityAsync(object model)
         {
-            if(model is Glossary newGlossary)
-            {
-                if (await IsGlossaryExistingAsync(newGlossary.Name))
-                {
-                    newGlossary.Name = await UpdateNameAsync(newGlossary.Name);
-                    await _repo.AddEntityAsync(newGlossary);
-                }
-                else
-                {
-                    await _repo.AddEntityAsync(newGlossary);
-                }
-            }
-            else
-            {
-                throw new ArgumentException("Model is not a Glossary", nameof(model));
-            }
+            throw new NotImplementedException();
+            //if(model is Glossary newGlossary)
+            //{
+            //    if (await IsGlossaryExistingAsync(newGlossary.Name))
+            //    {
+            //        newGlossary.Name = await UpdateNameAsync(newGlossary.Name);
+            //    }
+
+            //    await _repo.AddEntityAsync(newGlossary);
+            //}
+            //else
+            //{
+            //    throw new ArgumentException("Model is not a Glossary", nameof(model));
+            //}
         }
 
-        public void UpdateEntity(object model)
+        public async Task<bool> UpdateEntityAsync(int id)
         {
-            _repo.UpdateEntity(model);
+            throw new NotImplementedException();
         }
 
-        public void DeleteEntity(object model)
+        public async Task<bool> DeleteEntityAsync(int id)
         {
-            _repo.DeleteEntity(model);
+            var glossaryToDelete = await GetByIdAsync(id);
+            if (glossaryToDelete == null)
+            {
+                throw new KeyNotFoundException($"Glossary with ID {id} not found");
+            }
+
+            _repo.DeleteEntity(glossaryToDelete);
+            return await SaveAllAsync();
         }
 
         public async Task<IEnumerable<Glossary>> GetAllAsync(bool includeWords)
@@ -63,7 +68,7 @@ namespace MultiDictionary.App.Services
             return await _repo.IsGlossaryNameExistingAsync(name);
         }
 
-        public Task<bool> EntityIsValid(Object model)
+        public Task<bool> EntityIsValidAsync(Object model)
         {
             throw new NotImplementedException();
         }
@@ -83,6 +88,5 @@ namespace MultiDictionary.App.Services
 
             return newName;
         }
-
     }
 }

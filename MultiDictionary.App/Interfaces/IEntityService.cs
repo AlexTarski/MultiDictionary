@@ -10,10 +10,10 @@ namespace MultiDictionary.App.Interfaces
         where T : class
     {
         Task<T> GetByIdAsync(int id);
-        Task AddEntityAsync(Object model);
-        void UpdateEntity(Object model);
-        void DeleteEntity(Object model);
-        Task<bool> EntityIsValid(Object model);
+        Task<bool> AddEntityAsync(Object model);
+        Task<bool> UpdateEntityAsync(int id);
+        Task<bool> DeleteEntityAsync(int id);
+        Task<bool> EntityIsValidAsync(Object model);
         Task<bool> SaveAllAsync();
     }
 }

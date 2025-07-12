@@ -33,8 +33,8 @@ namespace MultiDictionary.WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to get words {ex}", ex);
-                return BadRequest("Failed to get words");
+                _logger.LogError(ex, "Failed to get all words");
+                return StatusCode(500, $"Internal Server Error:{ex.Message}");
             }
         }
 
@@ -44,13 +44,17 @@ namespace MultiDictionary.WebAPI.Controllers
             try
             {
                 var result = await _service.GetByIdAsync(id);
-                if (result != null) return Ok(_mapper.Map<WordViewModel>(result));
-                else return NotFound();
+                return Ok(_mapper.Map<WordViewModel>(result));
+            }
+            catch(KeyNotFoundException ex)
+            {
+                _logger.LogError(ex, "Failed to get a word by ID {Id}", id);
+                return NotFound($"Word with ID {id} was not found");
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to get word {ex}", ex);
-                return BadRequest("Failed to get word");
+                _logger.LogError(ex, "Failed to get a word by ID {Id}", id);
+                return StatusCode(500, $"Internal Server Error:{ex.Message}");
             }
         }
 
@@ -61,13 +65,18 @@ namespace MultiDictionary.WebAPI.Controllers
             {
                 var result = await _service.GetWordsByGlossaryAsync(glossaryId);
                 if (!result.Any())
-                    return NotFound($"No words found for Glossary ID {glossaryId}");
+                    return NotFound($"The Glossary with ID {glossaryId} is empty");
                 return Ok(_mapper.Map<IEnumerable<WordViewModel>>(result));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogError(ex, "Failed to get words from Glossary with ID {Id}", glossaryId);
+                return BadRequest($"Glossary with ID {glossaryId} was not found");
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to get words {ex}", ex);
-                return BadRequest("Failed to get words");
+                _logger.LogError(ex, "Failed to get words from Glossary with ID {Id}", glossaryId);
+                return StatusCode(500, $"Internal Server Error:{ex.Message}");
             }
         }
 
@@ -78,48 +87,49 @@ namespace MultiDictionary.WebAPI.Controllers
             {
                 var result = await _service.GetWordsByThemeAsync(glossaryId, theme);
                 if (result == null || !result.Any())
-                    return NotFound($"No words found for Glossary ID {glossaryId} and Theme '{theme}'");
+                {
+                    return NotFound($"No words with Theme '{theme}' were found in Glossary with ID {glossaryId}");
+                }
                 return Ok(_mapper.Map<IEnumerable<WordViewModel>>(result));
+            }
+            catch(KeyNotFoundException ex)
+            {
+                _logger.LogError(ex, "Failed to get words from Glossary with ID {Id}", glossaryId);
+                return BadRequest($"Glossary with ID {glossaryId} was not found");
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to get words {ex}", ex);
-                return BadRequest("Failed to get words");
+                _logger.LogError(ex, "Failed to get words by theme {Theme} in Glossary with ID {Id}", theme, glossaryId);
+                return StatusCode(500, $"Internal Server Error:{ex.Message}");
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> AddWordAsync([FromBody] WordViewModel model)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                if (ModelState.IsValid)
-                {
-                    // Assign defaults if null
-                    model.Theme ??= "No theme";
-                    model.Definition ??= "No definition";
-                    model.AdditionalInfo ??= "No additional information about word";
+                var newWord = _mapper.Map<WordViewModel, Word>(model);
+                var success = await _service.AddEntityAsync(newWord);
 
-                    var newWord = _mapper.Map<WordViewModel, Word>(model);
-                    await _service.AddEntityAsync(newWord);
-
-                    if (await _service.SaveAllAsync())
-                    {
-                        return Created($"/api/{newWord.Id}", _mapper.Map<Word, WordViewModel>(newWord)); //return HTTP 201 status (Created)
-                    }
-                }
-                else
-                {
-                    return BadRequest(ModelState);
-                }
+                return success ? Created($"/api/{newWord.Id}", _mapper.Map<Word, WordViewModel>(newWord)) //return HTTP 201 status (Created)
+                                          : StatusCode(500, "Failed to save a new word");
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogError(ex, "Failed to save a new word with ID {Id}", model.Id);
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to save a new word: {ex}", ex);
-                return StatusCode(500, "Unexpected error occurred.");
+                _logger.LogError(ex, "Failed to save a new word with ID {Id}", model.Id);
+                return StatusCode(500, $"Internal Server Error:{ex.Message}");
             }
-
-            return StatusCode(500, "Unexpected error occurred.");
         }
 
         [HttpDelete("{id:int}")]
@@ -127,20 +137,17 @@ namespace MultiDictionary.WebAPI.Controllers
         {
             try
             {
-                var wordToDelete = await _service.GetByIdAsync(id);
-                if(wordToDelete != null)
-                {
-                    _service.DeleteEntity(wordToDelete);
-                    return await _service.SaveAllAsync() ? NoContent() : StatusCode(500, "Failed to delete a word");
-                }
-                else
-                {
-                    return NotFound($"Word with ID {id} not found");
-                }
+                var success = await _service.DeleteEntityAsync(id);
+                return success ? NoContent() : StatusCode(500, "Failed to delete a word");
+            }
+            catch(KeyNotFoundException ex)
+            {
+                _logger.LogError(ex, "Failed to delete a word with ID {Id}", id);
+                return NotFound(ex.Message);
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, "Failed to delete a word with ID {id}", id);
+                _logger.LogError(ex, "Failed to delete a word with ID {Id}", id);
                 return StatusCode(500, $"Internal Server Error:{ex.Message}");
             }
         }
