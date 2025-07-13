@@ -18,8 +18,9 @@ namespace MultiDictionary.Domain
         Task AddEntityAsync(Object model);
         void UpdateEntity(Object model);
         void DeleteEntity(Object model);
-        Task<bool> IsGlossaryNameExistingAsync(string name);
-        Task<bool> IsGlossaryExistingAsync(int glossaryId);
+        Task<bool> IsGlossaryNameExistsAsync(string name);
+        Task<bool> IsGlossaryExistsAsync(int glossaryId);
+        Task<bool> IsWordExistsAsync(int wordId);
         Task<bool> SaveAllAsync();
     }
 }

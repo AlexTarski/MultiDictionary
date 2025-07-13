@@ -125,6 +125,11 @@ namespace MultiDictionary.WebAPI.Controllers
                 _logger.LogError(ex, "Failed to save a new word with ID {Id}", model.Id);
                 return NotFound(ex.Message);
             }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Failed to save a new word: {Message}", ex.Message);
+                return BadRequest($"Word with ID {model.Id} already exists");
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to save a new word with ID {Id}", model.Id);

@@ -34,8 +34,8 @@ namespace MultiDictionary.WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to get glossaries {ex}", ex);
-                return BadRequest("Failed to get glossaries");
+                _logger.LogError(ex, "Failed to get all glossaries");
+                return StatusCode(500, $"Internal Server Error:{ex.Message}");
             }
         }
 
@@ -45,42 +45,46 @@ namespace MultiDictionary.WebAPI.Controllers
             try
             {
                 var result = await _service.GetByIdAsync(id);
-                if (result != null) return Ok(_mapper.Map<GlossaryViewModel>(result));
-                else return NotFound();
+                return Ok(_mapper.Map<GlossaryViewModel>(result));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _logger.LogError(ex, "Failed to get a glossary by ID: {Id}", id);
+                return NotFound($"Glossary with ID {id} was not found");
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to get glossary {ex}", ex);
-                return BadRequest("Failed to get glossary");
+                _logger.LogError(ex, "Failed to get a glossary by ID {Id}", id);
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> AddGlossaryAsync([FromBody] GlossaryViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             try
             {
-                if (ModelState.IsValid)
-                {
-                    var newGlossary = _mapper.Map<GlossaryViewModel, Glossary>(model);
+                var newGlossary = _mapper.Map<GlossaryViewModel, Glossary>(model);
+                var success = await _service.AddEntityAsync(newGlossary);
 
-                    await _service.AddEntityAsync(newGlossary);
-                    if (await _service.SaveAllAsync())
-                    {
-                        return Created($"/api/glossaries/{newGlossary.Id}", _mapper.Map<Glossary, GlossaryViewModel>(newGlossary)); //return HTTP 201 status (Created)
-                    }
-                }
-                else
-                {
-                    return BadRequest(ModelState);
-                }
+                return success ? Created($"/api/glossaries/{newGlossary.Id}", _mapper.Map<Glossary, GlossaryViewModel>(newGlossary)) //return HTTP 201 status (Created)
+                        : StatusCode(500, "Failed to save a new glossary");
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogError(ex, "Failed to save a new glossary: {Message}", ex.Message);
+                return BadRequest($"Glossary with ID {model.Id} already exists");
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to save a new glossary: {ex}", ex);
+                _logger.LogError(ex, "Failed to save a new glossary: {Message}", ex.Message);
+                return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
-
-            return BadRequest("Failed to save a new glossary");
         }
 
         [HttpDelete("{id:int}")]
@@ -93,12 +97,12 @@ namespace MultiDictionary.WebAPI.Controllers
             }
             catch(KeyNotFoundException ex)
             {
-                _logger.LogError(ex, "Failed to delete glossary with ID {id}", id);
+                _logger.LogError(ex, "Failed to delete glossary with ID {Id}", id);
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to delete glossary with ID {id}", id);
+                _logger.LogError(ex, "Failed to delete glossary with ID {Id}", id);
                 return StatusCode(500, $"Internal Server Error: {ex.Message}");
             }
         }

@@ -10,6 +10,6 @@ namespace MultiDictionary.App.Interfaces
     public interface IGlossaryService : IEntityService<Glossary>
     {
         public Task<IEnumerable<Glossary>> GetAllAsync(bool includeWords);
-        public Task<bool> IsGlossaryExistingAsync(string name);
+        public Task<bool> IsGlossaryNameExistsAsync(string name);
     }
 }

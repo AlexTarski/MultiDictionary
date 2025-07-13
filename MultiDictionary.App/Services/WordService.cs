@@ -56,7 +56,7 @@ namespace MultiDictionary.App.Services
 
         public async Task<IEnumerable<Word>> GetWordsByGlossaryAsync(int glossaryId)
         {
-            if (!await _repo.IsGlossaryExistingAsync(glossaryId))
+            if (!await _repo.IsGlossaryExistsAsync(glossaryId))
             {
                 throw new KeyNotFoundException($"Glossary with ID {glossaryId} is not found");
             }
@@ -66,7 +66,7 @@ namespace MultiDictionary.App.Services
 
         public async Task<IEnumerable<Word>> GetWordsByThemeAsync(int glossaryId, string theme)
         {
-            if(!await _repo.IsGlossaryExistingAsync(glossaryId))
+            if(!await _repo.IsGlossaryExistsAsync(glossaryId))
             {
                 throw new KeyNotFoundException($"Glossary with ID {glossaryId} is not found");
             }
@@ -86,6 +86,7 @@ namespace MultiDictionary.App.Services
             var result = await _repo.GetWordByIdAsync(id);
             if(result == null)
                 throw new KeyNotFoundException($"Word with ID {id} was not found");
+
             return result;
         }
 
@@ -93,9 +94,14 @@ namespace MultiDictionary.App.Services
         {
             if(model is Word newWord)
             {
-                if (!await _repo.IsGlossaryExistingAsync(newWord.GlossaryId))
+                if (!await _repo.IsGlossaryExistsAsync(newWord.GlossaryId))
                 {
                     throw new KeyNotFoundException("Impossible to add a new word inside the glossary that doesn`t exist");
+                }
+
+                if(await _repo.IsWordExistsAsync(newWord.Id))
+                {
+                    throw new InvalidOperationException($"Word with ID {newWord.Id} already exists");
                 }
                 // Assign defaults if null
                 newWord.Theme ??= "No theme";

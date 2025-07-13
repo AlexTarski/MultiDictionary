@@ -82,14 +82,19 @@ namespace MultiDictionary.Infrastructure
             return await _context.Words.FindAsync(id);
         }
 
-        public async Task<bool> IsGlossaryNameExistingAsync(string name)
+        public async Task<bool> IsGlossaryNameExistsAsync(string name)
         {
             return await _context.Glossaries.AnyAsync(glossary => glossary.Name == name);
         }
         
-        public async Task<bool> IsGlossaryExistingAsync(int glossaryId)
+        public async Task<bool> IsGlossaryExistsAsync(int glossaryId)
         {
             return await _context.Glossaries.AnyAsync(glossary => glossary.Id == glossaryId);
+        }
+
+        public async Task<bool> IsWordExistsAsync(int wordId)
+        {
+            return await _context.Words.AnyAsync(word => word.Id == wordId);
         }
 
         public async Task<bool> SaveAllAsync()

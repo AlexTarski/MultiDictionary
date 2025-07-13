@@ -3,6 +3,7 @@ using MultiDictionary.Domain;
 using MultiDictionary.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -20,20 +21,14 @@ namespace MultiDictionary.App.Services
         }
         public async Task<bool> AddEntityAsync(object model)
         {
-            throw new NotImplementedException();
-            //if(model is Glossary newGlossary)
-            //{
-            //    if (await IsGlossaryExistingAsync(newGlossary.Name))
-            //    {
-            //        newGlossary.Name = await UpdateNameAsync(newGlossary.Name);
-            //    }
+            var isValid = await EntityIsValidAsync(model);
+            if (!isValid)
+            {
+                throw new ValidationException("Model validation failed");
+            }
 
-            //    await _repo.AddEntityAsync(newGlossary);
-            //}
-            //else
-            //{
-            //    throw new ArgumentException("Model is not a Glossary", nameof(model));
-            //}
+            await _repo.AddEntityAsync(model);
+            return await SaveAllAsync();
         }
 
         public async Task<bool> UpdateEntityAsync(int id)
@@ -60,17 +55,41 @@ namespace MultiDictionary.App.Services
 
         public async Task<Glossary> GetByIdAsync(int id)
         {
-            return await _repo.GetGlossaryByIdAsync(id);
+            var result =  await _repo.GetGlossaryByIdAsync(id);
+            if(result == null)
+            {
+                throw new KeyNotFoundException($"Glossary with ID {id} was not found");
+            }
+
+            return result;
         }
 
-        public async Task<bool> IsGlossaryExistingAsync(string name)
+        public async Task<bool> IsGlossaryNameExistsAsync(string name)
         {
-            return await _repo.IsGlossaryNameExistingAsync(name);
+            return await _repo.IsGlossaryNameExistsAsync(name);
         }
 
-        public Task<bool> EntityIsValidAsync(Object model)
+        public async Task<bool> EntityIsValidAsync(Object model)
         {
-            throw new NotImplementedException();
+            if(model is Glossary newGlossary)
+            {
+                if(await _repo.IsGlossaryExistsAsync(newGlossary.Id))
+                {
+                    throw new InvalidOperationException($"Glossary with ID {newGlossary.Id} already exists");
+                }
+
+                //change name if already exists
+                if(await IsGlossaryNameExistsAsync(newGlossary.Name))
+                {
+                    newGlossary.Name = await UpdateNameAsync(newGlossary.Name);
+                }
+
+                return true;
+            }
+            else
+            {
+                throw new ArgumentException("Model is not a Glossary", nameof(model));
+            }
         }
 
         public async Task<bool> SaveAllAsync()
@@ -81,7 +100,7 @@ namespace MultiDictionary.App.Services
         private async Task<string> UpdateNameAsync(string name)
         {
             string newName = $"{name}_{new Random().Next(0, 99)}";
-            while (await IsGlossaryExistingAsync(newName))
+            while (await IsGlossaryNameExistsAsync(newName))
             {
                 newName = $"{newName}{new Random().Next(0, 99)}";
             }
