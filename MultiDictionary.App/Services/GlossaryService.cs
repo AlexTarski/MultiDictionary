@@ -1,6 +1,7 @@
 ﻿using MultiDictionary.App.Interfaces;
 using MultiDictionary.Domain;
 using MultiDictionary.Domain.Entities;
+using MultiDictionary.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -21,14 +22,24 @@ namespace MultiDictionary.App.Services
         }
         public async Task<bool> AddEntityAsync(object model)
         {
-            var isValid = await EntityIsValidAsync(model);
-            if (!isValid)
+            try
             {
-                throw new ValidationException("Model validation failed");
-            }
+                var isValid = await EntityIsValidAsync(model);
+                if (!isValid)
+                {
+                    throw new ValidationException("Model validation failed");
+                }
 
-            await _repo.AddEntityAsync(model);
-            return await SaveAllAsync();
+                await _repo.AddEntityAsync(model);
+                return await SaveAllAsync();
+            }
+            catch (NameAlreadyExistsException)
+            {
+                var newGlossary = (Glossary)model;
+                newGlossary.Name = await UpdateNameAsync(newGlossary.Name);
+                await _repo.AddEntityAsync(newGlossary);
+                return await SaveAllAsync();
+            }
         }
 
         public async Task<bool> UpdateEntityAsync(int id)
@@ -78,10 +89,9 @@ namespace MultiDictionary.App.Services
                     throw new InvalidOperationException($"Glossary with ID {newGlossary.Id} already exists");
                 }
 
-                //change name if already exists
                 if(await IsGlossaryNameExistsAsync(newGlossary.Name))
                 {
-                    newGlossary.Name = await UpdateNameAsync(newGlossary.Name);
+                    throw new NameAlreadyExistsException($"A glossary with the name '{newGlossary.Name}' already exists");
                 }
 
                 return true;
