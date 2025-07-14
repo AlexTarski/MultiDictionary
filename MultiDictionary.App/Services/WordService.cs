@@ -1,6 +1,7 @@
 ﻿using MultiDictionary.App.Interfaces;
 using MultiDictionary.Domain;
 using MultiDictionary.Domain.Entities;
+using MultiDictionary.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,15 +21,27 @@ namespace MultiDictionary.App.Services
         }
         public async Task<bool> AddEntityAsync(object model)
         {
-            var isValid = await EntityIsValidAsync(model);
-
-            if (!isValid)
+            try
             {
-                throw new ValidationException("Model validation failed");
-            }
+                var isValid = await EntityIsValidAsync(model);
 
-            await _repo.AddEntityAsync(model);
-            return await SaveAllAsync();
+                if (!isValid)
+                {
+                    throw new ValidationException("Model validation failed");
+                }
+
+                var newWord = (Word)model;
+
+                await _repo.AddEntityAsync(newWord);
+                return await SaveAllAsync();
+            }
+            catch (FieldIsNullException)
+            {
+                var newWord = (Word)model;
+                WordService.UpdateNullFields(newWord);
+                await _repo.AddEntityAsync(newWord);
+                return await SaveAllAsync();
+            }
         }
 
         public async Task<bool> UpdateEntityAsync(int id)
@@ -94,7 +107,7 @@ namespace MultiDictionary.App.Services
         {
             if(model is Word newWord)
             {
-                if (!await _repo.IsGlossaryExistsAsync(newWord.GlossaryId))
+                if(!await _repo.IsGlossaryExistsAsync(newWord.GlossaryId))
                 {
                     throw new KeyNotFoundException("Impossible to add a new word inside the glossary that doesn`t exist");
                 }
@@ -103,10 +116,11 @@ namespace MultiDictionary.App.Services
                 {
                     throw new InvalidOperationException($"Word with ID {newWord.Id} already exists");
                 }
-                // Assign defaults if null
-                newWord.Theme ??= "No theme";
-                newWord.Definition ??= "No definition";
-                newWord.AdditionalInfo ??= "No additional information about word";
+
+                if(newWord.Theme == null || newWord.Definition == null || newWord.AdditionalInfo == null)
+                {
+                    throw new FieldIsNullException("One or more fields of the word are null");
+                }
 
                 return true;
             }
@@ -114,6 +128,14 @@ namespace MultiDictionary.App.Services
             {
                 throw new ArgumentException("Model is not a Word", nameof(model));
             }
+        }
+
+        private static void UpdateNullFields(Word word)
+        {
+            // Assign defaults if null
+            word.Theme ??= "No theme";
+            word.Definition ??= "No definition";
+            word.AdditionalInfo ??= "No additional information about word";
         }
 
         public async Task<bool> SaveAllAsync()
